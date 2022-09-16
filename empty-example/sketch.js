@@ -1,3 +1,5 @@
+// document.getElementById('inputfile').addEventListener('change', readTXT);
+
 function removeFromArray(arr, elt) {
   for (var i = arr.length - 1; i >= 0; i--) {
     if (arr[i] == elt) {
@@ -6,39 +8,54 @@ function removeFromArray(arr, elt) {
   }
 }
 
-function heuristic(ini, end) {
-  return d = dist(ini.i, ini.j, end.i, end.j);
+
+function heuristic(ini, end, euler = true) {
+  let d;
+  if (euler) {
+    d = dist(ini.i, ini.j, end.i, end.j);//Euler
+  } else {
+    d = abs(end.i - ini.i) + abs(end.j - ini.j);//Manhatan
+  }
+
+  return d;
 }
 
 var cols = 10;
 var rows = 10;
 var grid = new Array(rows);
-var ch = 1;
-var cv = 2;
-var cd = (ch ** 2 + cv ** 2) ** 0.5;
+var ch;
+var cv;
+var cd;
 
 var openSet = [];
 var closedSet = [];
 
 var start;
 var end;
-var corners = false;
+var diagonal = !true;
+var manhatan = true;
+let stopLoop = false;
+var initCanvas = false;
+
+var arquivo;
+var configs;
+var matrix = [];
 
 var w, h;
 var path = [];
-var canvaWidth = 500, canvaHeight = 400;
+var canvaWidth = 800, canvaHeight = 600;
 
 function Cell(i, j) {
 
   this.i = i;
   this.j = j;
   this.f = 0;
-  this.g = 0;
-  this.h = 0;
+  this.g = Infinity;
+  this.h = Infinity;
   this.value = 0;
 
   this.neighbors = [];
-  this.previous = undefined;
+  this.previous = null;
 
   this.show = function (color) {
     fill(color);
@@ -80,7 +97,7 @@ function Cell(i, j) {
       this.neighbors.push(tempNeighbor);
     }
 
-    if (corners === true) {
+    if (diagonal === true) {
       if (i + 1 < rows && j + 1 < cols) {
         var tempNeighbor = grid[i + 1][j + 1];
         tempNeighbor.g = cd// Atualizar custo de deslocamento
@@ -112,8 +129,31 @@ function Cell(i, j) {
   }
 }
 
+function custoDeslocamento(pFinal, pInicial) {
+  let dx = abs(pFinal.i - pInicial.i);
+  let dy = abs(pFinal.j - pInicial.j);
+
+
+  if (dx && dy && diagonal) return cd;
+  if (dy) return cv;
+  if (dx) return ch;
+}
+
 function setup() {
   createCanvas(canvaWidth, canvaHeight);
+  frameRate(50);
+  background(222);
+  loadAll();
+}
+
+function loadAll() {
+  initCanvas = true;
+
+  cols = 10;
+  rows = 10;
+  cv = 1;
+  ch = 2;
+  cd = (cv ** 2 + ch ** 2) ** 0.5;
 
   w = canvaWidth / cols;
   h = canvaHeight / rows;
@@ -136,12 +176,16 @@ function setup() {
   end = grid[5][5];
 
   console.log(grid);
-  background(222);
+
   openSet.push(start);
-  frameRate(50);
 }
 
 function draw() {
+
+  // if (!initCanvas) {
+  //   return;
+  // }
+
   if (openSet.length > 0) {
     // Continuar procurando
     var melhorIndex = 0;
@@ -153,35 +197,41 @@ function draw() {
 
     var current = openSet[melhorIndex];
 
-    if (current === end) {
+    if (current.i === end.i && current.j === end.j) {
       console.log("FIM");
+      stopLoop = true;
     }
 
-    removeFromArray(openSet, current);
-    closedSet.push(current);
+    if (!stopLoop) {
+      removeFromArray(openSet, current);
+      closedSet.push(current);
 
-    var neighbors = current.neighbors;
+      var neighbors = current.neighbors;
 
-    for (var i = 0; i < neighbors.length; i++) {
-      var neighbor = neighbors[i];
-      if (!closedSet.includes(neighbor)) {
-        var tempG = current.g + 1;
-        if (openSet.includes(neighbor)) {
-          if (tempG < neighbor.g) {
+      for (var i = 0; i < neighbors.length; i++) {
+        var neighbor = neighbors[i];
+        if (!closedSet.includes(neighbor)) {
+          var tempG = current.g + custoDeslocamento(neighbor, current);
+          if (openSet.includes(neighbor)) {
+            if (tempG < neighbor.g) {
+              neighbor.g = tempG;
+            }
+          } else {
             neighbor.g = tempG;
+            openSet.push(neighbor);
           }
-        } else {
-          neighbor.g = tempG;
-          openSet.push(neighbor);
+          neighbor.h = heuristic(neighbor, end);
+          neighbor.f = neighbor.g + neighbor.h;
+          neighbor.previous = current;
         }
-        neighbor.h = heuristic(neighbor, end);
-        neighbor.f = neighbor.g + neighbor.h;
-        neighbor.previous = current;
       }
     }
 
+
+
   } else {
-    // sem solução
+    console.log("SEM SOLUÇÃO");
+    stopLoop = true;
   }
 
   for (var i = 0; i < rows; i++) {
@@ -210,7 +260,5 @@ function draw() {
     path.push(temp.previous);
     temp = temp.previous;
   }
-
-
 
 }
