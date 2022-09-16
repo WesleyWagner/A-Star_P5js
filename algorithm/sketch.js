@@ -33,7 +33,7 @@ var closedSet = [];
 
 var start;
 var end;
-var diagonal = true;
+var diagonal = false;
 var manhatan = true;
 let stopLoop = false;
 var initCanvas = false;
@@ -248,15 +248,18 @@ function draw() {
           var tempG = current.g + custoDeslocamento(neighbor, current);
           if (openSet.includes(neighbor)) {
             if (tempG < neighbor.g) {
-              neighbor.g = tempG;
+              let indexNeighbor = openSet.indexOf(neighbor);
+              openSet[indexNeighbor].g = tempG;
+              // neighbor.g = tempG;
             }
           } else {
+            neighbor.h = heuristic(neighbor, end);
+            neighbor.f = neighbor.g + neighbor.h;
+            neighbor.previous = current;
             neighbor.g = tempG;
             openSet.push(neighbor);
           }
-          neighbor.h = heuristic(neighbor, end);
-          neighbor.f = neighbor.g + neighbor.h;
-          neighbor.previous = current;
+          
         }
       }
     }
@@ -290,7 +293,10 @@ function draw() {
   }
 
   for (var i = 0; i < path.length; i++) {
-    path[i].show(corCaminho);
+    try{
+      path[i].show(corCaminho);
+    }catch{};
+    
   }
 
   for (var i = 0; i < rows; i++) 
@@ -303,11 +309,7 @@ function draw() {
       }
     }
 
-  if(resolvido){
-    let reversePath = (path.reverse());
-    console.log(pathResolvido);
-    resolvido = false;
-  }
+  
   
   path = [];
   var temp = current;
@@ -320,4 +322,9 @@ function draw() {
   }catch{
     console.log("null catch");
   };
+  if(resolvido){
+    let reversePath = (path.reverse());
+    // console.log(pathResolvido);
+    resolvido = false;
+  }
 }
