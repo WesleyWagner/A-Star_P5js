@@ -37,6 +37,17 @@ var diagonal = true;
 var manhatan = true;
 let stopLoop = false;
 var initCanvas = false;
+var resolvido = false;
+var pathResolvido;
+
+var
+  corLivre,
+  corInicio,
+  corFim,
+  corOcupado,
+  corVerificar,
+  corCaminho,
+  corFechado;
 
 var arquivo;
 var configs;
@@ -50,7 +61,7 @@ function Cell(i, j) {
 
   this.i = i;
   this.j = j;
-  this.f = 0;
+  this.f = Infinity;
   this.g = Infinity;
   this.h = Infinity;
   this.value = 0;
@@ -67,8 +78,6 @@ function Cell(i, j) {
     textSize(10);
     textAlign(CENTER, CENTER);
     text(`C${this.i}${this.j}:${this.value}`, this.j * w, this.i * h, w, h);
-
-
   }
 
   this.addNeighbors = function (grid) {
@@ -150,12 +159,20 @@ function custoDeslocamento(pFinal, pInicial) {
   let dy = abs(pFinal.j - pInicial.j);
 
 
-  if (dx && dy && diagonal) return cd;
-  if (dy) return cv;
-  if (dx) return ch;
+  if (dx > 0 && dy > 0 && diagonal) return cd;
+  if (dy > 0 && dx == 0) return cv;
+  if (dx > 0 && dy == 0) return ch;
 }
 
 function setup() {
+
+  corLivre = color('#EEE');//ok
+  corInicio = color('#496DDB');//ok
+  corFim = color('#C2D076');//ok
+  corOcupado = color('#160F29');//ok
+  corVerificar = color('#98A886');//ok
+  corCaminho = color('#597DEB');
+  corFechado = color('#C95D63');//ok
   createCanvas(canvaWidth, canvaHeight);
   frameRate(fr);
   background(222);
@@ -216,6 +233,7 @@ function draw() {
     if (current.value == 3) {
       console.log("FIM");
       stopLoop = true;
+      resolvido = true;
     }
 
     if (!stopLoop) {
@@ -242,46 +260,55 @@ function draw() {
         }
       }
     }
-
-
-
   } else {
     console.log("SEM SOLUÇÃO");
     stopLoop = true;
   }
-
+  
   for (var i = 0; i < rows; i++) {
     for (var j = 0; j < cols; j++) {
-      grid[i][j].show(color(255));
+      if (grid[i][j].value == 0) {
+        grid[i][j].show(corLivre);
+      }
+      if (grid[i][j].value == 1) {
+        grid[i][j].show(corOcupado);
+      }
+      if (grid[i][j].value == 2) {
+        grid[i][j].show(corInicio);
+      }
+      if (grid[i][j].value == 3) {
+        grid[i][j].show(corFim);
+      }
     }
   }
-
   for (var i = 0; i < closedSet.length; i++) {
-    closedSet[i].show(color(255, 0, 0));
+    closedSet[i].show(corFechado);
   }
 
   for (var i = 0; i < openSet.length; i++) {
-    openSet[i].show(color(0, 255, 0));
+    openSet[i].show(corVerificar);
   }
 
   for (var i = 0; i < path.length; i++) {
-    path[i].show(color(0, 0, 255));
+    path[i].show(corCaminho);
   }
 
-  for (var i = 0; i < rows; i++) {
+  for (var i = 0; i < rows; i++) 
     for (var j = 0; j < cols; j++) {
-      if (grid[i][j].value == 1) {
-        grid[i][j].show(color(100));
-      }
       if (grid[i][j].value == 2) {
-        grid[i][j].show(color(100, 100, 200));
+        grid[i][j].show(corInicio);
       }
       if (grid[i][j].value == 3) {
-        grid[i][j].show(color(100, 200, 100));
+        grid[i][j].show(corFim);
       }
     }
-  }
 
+  if(resolvido){
+    let reversePath = (path.reverse());
+    console.log(pathResolvido);
+    resolvido = false;
+  }
+  
   path = [];
   var temp = current;
   path.push(temp);
@@ -291,8 +318,6 @@ function draw() {
       temp = temp.previous;
     }
   }catch{
-    console.log("expection");
+    console.log("null catch");
   };
-  
-
 }

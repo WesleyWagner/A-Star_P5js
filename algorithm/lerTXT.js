@@ -93,6 +93,8 @@ function readTXT() {
         cols = configs.ncols;
         rows = configs.nrows;
         grid = new Array(rows);
+        cv = 1;
+        ch = 1;
         cv = configs.weightY;
         ch = configs.weightX;
         cd = (cv ** 2 + ch ** 2) ** 0.5;
@@ -131,7 +133,11 @@ function readTXT() {
         stopLoop = false;
         openSet = [];
         closedSet = [];
+        start.f = 0;//Inicializar custo total inicial 0 e recalcular para os próximos nós
+        // start.g = 0;//Inicializar custo total inicial 0 e recalcular para os próximos nós
+        // pathResolvido.push(start);
         openSet.push(start);
+        resolvido = false;
         draw();
     }
 }
