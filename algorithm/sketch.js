@@ -26,7 +26,7 @@ var grid;
 var ch;
 var cv;
 var cd;
-var fr = 30;
+var fr = 10;
 
 var openSet = [];
 var closedSet = [];
@@ -162,6 +162,7 @@ function custoDeslocamento(pFinal, pInicial) {
   if (dx > 0 && dy > 0 && diagonal) return cd;
   if (dy > 0 && dx == 0) return cv;
   if (dx > 0 && dy == 0) return ch;
+  if (dx == 0 && dy == 0) return 0; // Ponto final e inicial sao coincidentes
 }
 
 function setup() {
