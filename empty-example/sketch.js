@@ -20,19 +20,20 @@ function heuristic(ini, end, euler = true) {
   return d;
 }
 
-var cols = 10;
-var rows = 10;
-var grid = new Array(rows);
+var cols;
+var rows;
+var grid;
 var ch;
 var cv;
 var cd;
+var fr = 30;
 
 var openSet = [];
 var closedSet = [];
 
 var start;
 var end;
-var diagonal = !true;
+var diagonal = true;
 var manhatan = true;
 let stopLoop = false;
 var initCanvas = false;
@@ -43,7 +44,7 @@ var matrix = [];
 
 var w, h;
 var path = [];
-var canvaWidth = 800, canvaHeight = 600;
+var canvaWidth = 1000, canvaHeight = 600;
 
 function Cell(i, j) {
 
@@ -63,9 +64,9 @@ function Cell(i, j) {
     rect(this.j * w, this.i * h, w, h);
 
     fill(0, 102, 153);
-    textSize(12);
+    textSize(10);
     textAlign(CENTER, CENTER);
-    text(`C${this.i}${this.j}`, this.j * w, this.i * h, w, h);
+    text(`C${this.i}${this.j}:${this.value}`, this.j * w, this.i * h, w, h);
 
 
   }
@@ -75,55 +76,70 @@ function Cell(i, j) {
     var j = this.j;
     if (i - 1 >= 0) {
       var tempNeighbor = grid[i - 1][j];
-      tempNeighbor.g = ch// Atualizar custo de deslocamento
-      this.neighbors.push(tempNeighbor);
+      if (tempNeighbor.value != 1) {
+        // tempNeighbor.g = ch// Atualizar custo de deslocamento
+        this.neighbors.push(tempNeighbor);
+      }
     }
 
     if (j - 1 >= 0) {
       var tempNeighbor = grid[i][j - 1];
-      tempNeighbor.g = cv// Atualizar custo de deslocamento
-      this.neighbors.push(tempNeighbor);
+      if (tempNeighbor.value != 1) {
+        // tempNeighbor.g = cv// Atualizar custo de deslocamento
+        this.neighbors.push(tempNeighbor);
+      }
     }
 
     if (i + 1 < rows) {
       var tempNeighbor = grid[i + 1][j];
-      tempNeighbor.g = ch// Atualizar custo de deslocamento
-      this.neighbors.push(tempNeighbor);
+      if (tempNeighbor.value != 1) {
+        // tempNeighbor.g = ch// Atualizar custo de deslocamento
+        this.neighbors.push(tempNeighbor);
+      }
     }
 
     if (j + 1 < cols) {
       var tempNeighbor = grid[i][j + 1];
-      tempNeighbor.g = cv// Atualizar custo de deslocamento
-      this.neighbors.push(tempNeighbor);
+      if (tempNeighbor.value != 1) {
+        // tempNeighbor.g = cv// Atualizar custo de deslocamento
+        this.neighbors.push(tempNeighbor);
+      }
     }
 
     if (diagonal === true) {
       if (i + 1 < rows && j + 1 < cols) {
         var tempNeighbor = grid[i + 1][j + 1];
-        tempNeighbor.g = cd// Atualizar custo de deslocamento
-        this.neighbors.push(tempNeighbor);
+        if (tempNeighbor.value != 1) {
+          // tempNeighbor.g = cd// Atualizar custo de deslocamento
+          this.neighbors.push(tempNeighbor);
+        }
 
       }
 
       if (i + 1 < rows && j - 1 >= 0) {
 
         var tempNeighbor = grid[i + 1][j - 1];
-        tempNeighbor.g = cd// Atualizar custo de deslocamento
-        this.neighbors.push(tempNeighbor);
+        if (tempNeighbor.value != 1) {
+          // tempNeighbor.g = cd// Atualizar custo de deslocamento
+          this.neighbors.push(tempNeighbor);
+        }
       }
 
       if (i - 1 >= 0 && j + 1 < cols) {
 
         var tempNeighbor = grid[i - 1][j + 1];
-        tempNeighbor.g = cd// Atualizar custo de deslocamento
-        this.neighbors.push(tempNeighbor);
+        if (tempNeighbor.value != 1) {
+          // tempNeighbor.g = cd// Atualizar custo de deslocamento
+          this.neighbors.push(tempNeighbor);
+        }
       }
 
       if (i - 1 >= 0 && j - 1 >= 0) {
         var tempNeighbor = grid[i - 1][j - 1];
-        tempNeighbor.g = cd// Atualizar custo de deslocamento
-        this.neighbors.push(tempNeighbor);
-
+        if (tempNeighbor.value != 1) {
+          // tempNeighbor.g = cd// Atualizar custo de deslocamento
+          this.neighbors.push(tempNeighbor);
+        }
       }
     }
   }
@@ -141,50 +157,50 @@ function custoDeslocamento(pFinal, pInicial) {
 
 function setup() {
   createCanvas(canvaWidth, canvaHeight);
-  frameRate(50);
+  frameRate(fr);
   background(222);
-  loadAll();
+  // loadAll();
 }
 
-function loadAll() {
-  initCanvas = true;
+// function loadAll() {
+//   initCanvas = true;
+//   cols = configs.ncols;
+//   rows = 10;
+//   grid = new Array(rows);
+//   cv = 1;
+//   ch = 2;
+//   cd = (cv ** 2 + ch ** 2) ** 0.5;
 
-  cols = 10;
-  rows = 10;
-  cv = 1;
-  ch = 2;
-  cd = (cv ** 2 + ch ** 2) ** 0.5;
+//   w = canvaWidth / cols;
+//   h = canvaHeight / rows;
 
-  w = canvaWidth / cols;
-  h = canvaHeight / rows;
+//   for (var i = 0; i < rows; i++) {
+//     grid[i] = new Array(cols);
+//   }
 
-  for (var i = 0; i < rows; i++) {
-    grid[i] = new Array(cols);
-  }
+//   for (var i = 0; i < rows; i++)
+//     for (var j = 0; j < cols; j++) {
+//       grid[i][j] = new Cell(i, j);
+//     }
 
-  for (var i = 0; i < rows; i++)
-    for (var j = 0; j < cols; j++) {
-      grid[i][j] = new Cell(i, j);
-    }
+//   for (var i = 0; i < rows; i++)
+//     for (var j = 0; j < cols; j++) {
+//       grid[i][j].addNeighbors(grid);
+//     }
 
-  for (var i = 0; i < rows; i++)
-    for (var j = 0; j < cols; j++) {
-      grid[i][j].addNeighbors(grid);
-    }
+//   start = grid[0][0];
+//   end = grid[5][5];
 
-  start = grid[0][0];
-  end = grid[5][5];
+//   console.log(grid);
 
-  console.log(grid);
-
-  openSet.push(start);
-}
+//   openSet.push(start);
+// }
 
 function draw() {
 
-  // if (!initCanvas) {
-  //   return;
-  // }
+  if (!initCanvas) {
+    return;
+  }
 
   if (openSet.length > 0) {
     // Continuar procurando
@@ -197,7 +213,7 @@ function draw() {
 
     var current = openSet[melhorIndex];
 
-    if (current.i === end.i && current.j === end.j) {
+    if (current.value == 3) {
       console.log("FIM");
       stopLoop = true;
     }
@@ -240,7 +256,6 @@ function draw() {
     }
   }
 
-
   for (var i = 0; i < closedSet.length; i++) {
     closedSet[i].show(color(255, 0, 0));
   }
@@ -253,12 +268,31 @@ function draw() {
     path[i].show(color(0, 0, 255));
   }
 
+  for (var i = 0; i < rows; i++) {
+    for (var j = 0; j < cols; j++) {
+      if (grid[i][j].value == 1) {
+        grid[i][j].show(color(100));
+      }
+      if (grid[i][j].value == 2) {
+        grid[i][j].show(color(100, 100, 200));
+      }
+      if (grid[i][j].value == 3) {
+        grid[i][j].show(color(100, 200, 100));
+      }
+    }
+  }
+
   path = [];
   var temp = current;
   path.push(temp);
-  while (temp.previous == undefined ? false : true) {
-    path.push(temp.previous);
-    temp = temp.previous;
-  }
+  try{
+    while (temp.previous!=null?true:false) {
+      path.push(temp.previous);
+      temp = temp.previous;
+    }
+  }catch{
+    console.log("expection");
+  };
+  
 
 }

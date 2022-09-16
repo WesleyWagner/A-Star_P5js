@@ -65,11 +65,11 @@ document.getElementById('inputfile').addEventListener('change', readTXT);
 
 function readTXT() {
     console.log("ARQUIVO ENVIADO")
-    var outputHTML = document.getElementById('output');
+    // var outputHTML = document.getElementById('output');
     var fr = new FileReader();
     fr.readAsText(this.files[0]);
     fr.onload = function () {
-        outputHTML.textContent = fr.result;
+        // outputHTML.textContent = fr.result;
         arquivo = fr.result;
         // console.log(outputHTML.textContent);
         let splited = arquivo.split(/\r\n/);
@@ -92,6 +92,7 @@ function readTXT() {
 
         cols = configs.ncols;
         rows = configs.nrows;
+        grid = new Array(rows);
         cv = configs.weightY;
         ch = configs.weightX;
         cd = (cv ** 2 + ch ** 2) ** 0.5;
@@ -110,15 +111,28 @@ function readTXT() {
 
         for (var i = 0; i < rows; i++)
             for (var j = 0; j < cols; j++) {
+                grid[i][j].value = matrix[i][j];
+                if(grid[i][j].value == 2){
+                    start = grid[i][j];
+                }
+                if(grid[i][j].value == 3){
+                    end = grid[i][j];
+                }
+            }
+
+        for (var i = 0; i < rows; i++)
+            for (var j = 0; j < cols; j++) {
                 grid[i][j].addNeighbors(grid);
             }
 
-        start = grid[0][0];
-        end = grid[5][5];
+        
 
         console.log(grid);
-
+        stopLoop = false;
+        openSet = [];
+        closedSet = [];
         openSet.push(start);
+        draw();
     }
 }
 
