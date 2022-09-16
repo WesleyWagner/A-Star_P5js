@@ -26,14 +26,14 @@ var grid;
 var ch;
 var cv;
 var cd;
-var fr = 10;
+var fr = 30;
 
 var openSet = [];
 var closedSet = [];
 
 var start;
 var end;
-var diagonal = false;
+var diagonal = true;
 var manhatan = true;
 let stopLoop = false;
 var initCanvas = false;
@@ -168,11 +168,11 @@ function custoDeslocamento(pFinal, pInicial) {
 function setup() {
 
   corLivre = color('#EEE');//ok
-  corInicio = color('#496DDB');//ok
+  corInicio = color('#FF9F1C');//ok
   corFim = color('#C2D076');//ok
   corOcupado = color('#160F29');//ok
   corVerificar = color('#98A886');//ok
-  corCaminho = color('#597DEB');
+  corCaminho = color('#698DFB');
   corFechado = color('#C95D63');//ok
   createCanvas(canvaWidth, canvaHeight);
   frameRate(fr);
