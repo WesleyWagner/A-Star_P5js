@@ -133,12 +133,16 @@ function readTXT() {
         stopLoop = false;
         openSet = [];
         closedSet = [];
-        start.f = 0;//Inicializar custo total inicial 0 e recalcular para os próximos nós
-        // start.g = 0;//Inicializar custo total inicial 0 e recalcular para os próximos nós
+        start.h = heuristic(start,end);//Inicializar custo total inicial 0 e recalcular para os próximos nós
+        start.g = 0;//Inicializar custo total inicial 0 e recalcular para os próximos nós
+        start.f = start.g+ start.h;
         // pathResolvido.push(start);
         openSet.push(start);
         resolvido = false;
+        boolPathMake = true;
         draw();
+        let infoCustosEl = document.getElementById("infoCustos");
+        infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
     }
 }
 
