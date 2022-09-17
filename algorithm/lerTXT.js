@@ -139,6 +139,7 @@ function readTXT() {
         // pathResolvido.push(start);
         openSet.push(start);
         resolvido = false;
+        solve =false;
         boolPathMake = true;
         draw();
         let infoCustosEl = document.getElementById("infoCustos");

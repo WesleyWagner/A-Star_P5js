@@ -39,6 +39,7 @@ var
   stopLoop = false, // Parar loop de calculo
   initCanvas = false, // Iniciar desenho do Canvas na tela
   resolvido = false, // Flag de resolvido
+  solve = false;
   boolPathMake = true; // Flag de construção do caminho final
 
 var
@@ -59,8 +60,10 @@ var
   w, // Largura da celula do canvas
   h, // Altura da celula do canvas
   pathCanvas = [], // 
-  canvaWidth = 1000,
-  canvaHeight = 600;
+  xCanvas = 350;
+  yCanvas = 80;
+  canvaWidth = 800,
+  canvaHeight = 400;
 
 function Cell(i, j) {
   this.i = i;
@@ -163,7 +166,7 @@ function custoDeslocamento(pFinal, pInicial) {
   if (dx > 0 && dy == 0) return ch;// se mover em x e não em y, retornar custo de movimento horizontal
   if (dx == 0 && dy == 0) return 0; // Ponto final e inicial são coincidentes
 }
-
+var canvas;
 function setup() {
   corLivre = color('#EEE');//ok
   corInicio = color('#FF9F1C');//ok
@@ -172,69 +175,73 @@ function setup() {
   corVerificar = color('#98A886');//ok
   corCaminho = color('#698DFB');
   corFechado = color('#C95D63');//ok
-  createCanvas(canvaWidth, canvaHeight);
+  canvas = createCanvas(canvaWidth, canvaHeight);
   frameRate(fr);
   background(222);
+  canvas.position(xCanvas,yCanvas);
 }
 
 function draw() {
-
   if (!initCanvas) {
     return;
   }
-
-  if (openSet.length > 0) {
-    // Continuar procurando
-    var melhorIndex = 0;
-    for (var i = 0; i < openSet.length; i++) {
-      if (openSet[i].f < openSet[melhorIndex].f) {
-        melhorIndex = i;
+  if(solve){
+    if (openSet.length > 0) {
+      // Continuar procurando
+      var melhorIndex = 0;
+      for (var i = 0; i < openSet.length; i++) {
+        if (openSet[i].f < openSet[melhorIndex].f) {
+          melhorIndex = i;
+        }
       }
-    }
-
-    var current = openSet[melhorIndex];
-
-    if (current.value == 3) {
-      console.log("PONTO DE CHEGADA ALCANÇADO");
-      stopLoop = true;
-      resolvido = true;
-    }
-
-    if (!stopLoop) {
-      removeFromArray(openSet, current);
-      closedSet.push(current);
-
-      var neighbors = current.neighbors;
-
-      for (var i = 0; i < neighbors.length; i++) {
-        var neighbor = neighbors[i];
-        var tempH = heuristic(neighbor,end);
-        var tempF = tempG + tempH;
-        if (!closedSet.includes(neighbor)) {
-          var tempG = current.g + custoDeslocamento(neighbor, current);
-          if (openSet.includes(neighbor)) {
-            if (tempG < neighbor.g) {
-              let indexNeighbor = openSet.indexOf(neighbor);
-              openSet[indexNeighbor].g = tempG;
-              // openSet[indexNeighbor].f = tempF;
-              // openSet[indexNeighbor].h = tempH;
+  
+      var current = openSet[melhorIndex];
+  
+      if (current.value == 3) {
+        console.log("PONTO DE CHEGADA ALCANÇADO");
+        stopLoop = true;
+        resolvido = true;
+        // solve =false;
+      }
+  
+      if (!stopLoop) {
+        removeFromArray(openSet, current);
+        closedSet.push(current);
+  
+        var neighbors = current.neighbors;
+  
+        for (var i = 0; i < neighbors.length; i++) {
+          var neighbor = neighbors[i];
+          var tempH = heuristic(neighbor,end);
+          var tempF = tempG + tempH;
+          if (!closedSet.includes(neighbor)) {
+            var tempG = current.g + custoDeslocamento(neighbor, current);
+            if (openSet.includes(neighbor)) {
+              if (tempG < neighbor.g) {
+                let indexNeighbor = openSet.indexOf(neighbor);
+                openSet[indexNeighbor].g = tempG;
+                // openSet[indexNeighbor].f = tempF;
+                // openSet[indexNeighbor].h = tempH;
+              }
+            } else {// Nó novo
+               
+              neighbor.h = heuristic(neighbor, end);
+              neighbor.f = neighbor.g + neighbor.h;
+              neighbor.g = tempG;
+               
+              neighbor.previous = current;
+              openSet.push(neighbor);
             }
-          } else {// Nó novo
-             
-            neighbor.h = heuristic(neighbor, end);
-            neighbor.f = neighbor.g + neighbor.h;
-            neighbor.g = tempG;
-             
-            neighbor.previous = current;
-            openSet.push(neighbor);
           }
         }
       }
+    } else {
+      console.log("SEM SOLUÇÃO");
+      stopLoop = true;
+      // solve =false;
     }
-  } else {
-    console.log("SEM SOLUÇÃO");
-    stopLoop = true;
   }
+  
 
   for (var i = 0; i < rows; i++) {
     for (var j = 0; j < cols; j++) {
