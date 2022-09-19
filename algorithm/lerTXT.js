@@ -61,9 +61,9 @@ var configs;
 var matrix = [];
 var grafoBusca;
 
-document.getElementById('inputfile').addEventListener('change', readTXT);
+document.getElementById('inputfile').addEventListener('change', abrirArquivo);
 
-function readTXT() {
+function abrirArquivo() {
     console.log("ARQUIVO ENVIADO")
     // var outputHTML = document.getElementById('output');
     var fr = new FileReader();
@@ -71,117 +71,71 @@ function readTXT() {
     fr.onload = function () {
         // outputHTML.textContent = fr.result;
         arquivo = fr.result;
-        // console.log(outputHTML.textContent);
-        let splited = arquivo.split(/\r\n/);
-        let header = splited[0].split(' ');
-        let nrows = header[0];
-        let ncols = header[1];
-        let weightX = header[2];
-        let weightY = header[3];
-        configs = { nrows, ncols, weightX, weightY };
-        matrix = [];
-        for (let i = 0; i < splited.length; i++) {
-            matrix[i] = splited[i].split(' ');
-        }
-        matrix.shift();
-
-        // tableCreate(nrows, ncols, matrix);
-        // tableColor(matrix);
-        matrix = ArrayRemove(matrix, '');
-        initCanvas = true;
-
-        cols = configs.ncols;
-        rows = configs.nrows;
-        grid = new Array(rows);
-        cv = 1;
-        ch = 1;
-        cv = configs.weightY;
-        ch = configs.weightX;
-        cd = (cv ** 2 + ch ** 2) ** 0.5;
-
-        w = canvaWidth / cols;
-        h = canvaHeight / rows;
-
-        for (var i = 0; i < rows; i++) {
-            grid[i] = new Array(cols);
-        }
-
-        for (var i = 0; i < rows; i++)
-            for (var j = 0; j < cols; j++) {
-                grid[i][j] = new Cell(i, j);
-            }
-
-        for (var i = 0; i < rows; i++)
-            for (var j = 0; j < cols; j++) {
-                grid[i][j].value = matrix[i][j];
-                if(grid[i][j].value == 2){
-                    start = grid[i][j];
-                }
-                if(grid[i][j].value == 3){
-                    end = grid[i][j];
-                }
-            }
-
-        for (var i = 0; i < rows; i++)
-            for (var j = 0; j < cols; j++) {
-                grid[i][j].addNeighbors(grid);
-            }
-
-        
-
-        console.log(grid);
-        stopLoop = false;
-        openSet = [];
-        closedSet = [];
-        start.h = heuristic(start,end);//Inicializar custo total inicial 0 e recalcular para os próximos nós
-        start.g = 0;//Inicializar custo total inicial 0 e recalcular para os próximos nós
-        start.f = start.g+ start.h;
-        // pathResolvido.push(start);
-        openSet.push(start);
-        resolvido = false;
-        solve =false;
-        boolPathMake = true;
-        draw();
-        let infoCustosEl = document.getElementById("infoCustos");
-        infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+        handleConfigs();
     }
 }
 
-function getStart(matrix) {
-    let solvePoint = new nodePoint;
-    let i;
-    let j;
-    matrix.forEach(function (value, index) {
-        i = index;
-        j = value.findIndex(function (value) {
-            return value == CELL_STATE.START;
-        });
-        if (j >= 0) {
-            console.log(`Matrix[${i}][${j}]`);
-        }
-    });
-    solvePoint.row = i;
-    solvePoint.col = j;
-    solvePoint.father = true;
-    return solvePoint;
+function parserArquivo(){
+    // console.log(outputHTML.textContent);
+    let splited = arquivo.split(/\r\n/);
+    let header = splited[0].split(' ');
+    let nrows = header[0];
+    let ncols = header[1];
+    let weightX = header[2];
+    let weightY = header[3];
+    configs = { nrows, ncols, weightX, weightY };
+    matrix = [];
+    for (let i = 0; i < splited.length; i++) {
+        matrix[i] = splited[i].split(' ');
+    }
+    matrix.shift();
+    matrix = ArrayRemove(matrix, '');
 }
 
-function getEnd(matrix) {
-    let solvePoint = new nodePoint;
-    let i;
-    let j;
-    matrix.forEach(function (value, index) {
-        i = index;
-        j = value.findIndex(function (value) {
-            return value == CELL_STATE.FINISH;
-        });
-        if (j >= 0) {
-            console.log(`Matrix[${i}][${j}]`);
+function loadConfigs(){
+    cols = configs.ncols;
+    rows = configs.nrows;
+    grid = new Array(rows);
+    cv = 1;
+    ch = 1;
+    cv = configs.weightY;
+    ch = configs.weightX;
+    cd = (cv ** 2 + ch ** 2) ** 0.5;
+
+    w = canvaWidth / cols;
+    h = canvaHeight / rows;
+
+    for (var i = 0; i < rows; i++) {
+        grid[i] = new Array(cols);
+    }
+
+    for (var i = 0; i < rows; i++)
+        for (var j = 0; j < cols; j++) {
+            grid[i][j] = new Cell(i, j);
         }
-    });
-    solvePoint.row = i;
-    solvePoint.col = j;
-    return solvePoint;
+
+    for (var i = 0; i < rows; i++)
+        for (var j = 0; j < cols; j++) {
+            grid[i][j].value = matrix[i][j];
+            if (grid[i][j].value == 2) {
+                start = grid[i][j];
+            }
+            if (grid[i][j].value == 3) {
+                end = grid[i][j];
+            }
+        }
+
+    for (var i = 0; i < rows; i++)
+        for (var j = 0; j < cols; j++) {
+            grid[i][j].addNeighbors(grid);
+        }
+    
+}
+
+function handleConfigs() {
+    parserArquivo();
+    loadConfigs();
+    handleReset();
 }
 
 function ArrayRemove(array, value) {
@@ -189,4 +143,29 @@ function ArrayRemove(array, value) {
     return array.filter(function (ele) {
         return ele != value;
     });
+}
+
+function handleReset() {
+    loadConfigs();
+    initCanvas = true;
+    stopLoop = false;
+    openSet = [];
+    closedSet = [];
+    start.h = heuristic(start, end);//Inicializar custo total inicial 0 e recalcular para os próximos nós
+    start.g = 0;//Inicializar custo total inicial 0 e recalcular para os próximos nós
+    start.f = start.g + start.h;
+    // pathResolvido.push(start);
+    openSet.push(start);
+    resolvido = false;
+    solve = false;
+    boolPathMake = true;
+    draw();
+    let infoCustosEl = document.getElementById('infoCustos');
+    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+    let outputPath = document.getElementById('outputPath');
+    outputPath.innerText = '';
+    let buttonCopy = document.getElementById('btn-copy');
+    buttonCopy.innerText = 'Copiar resultado';
+    let resultadoText = document.getElementById('resultadoText');
+    resultadoText.innerText = '';
 }

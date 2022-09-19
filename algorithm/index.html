@@ -3,89 +3,52 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>p5.js example</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      font-family: "Lato", sans-serif;
-    }
-
-    .sidenav {
-      height: 100%;
-      width: 320;
-      position: fixed;
-      z-index: 1;
-      top: 0;
-      left: 0;
-      background-color: #111;
-      overflow-x: hidden;
-      transition: 0.5s;
-      padding-top: 60px;
-    }
-
-    .sidenav a {
-      padding: 8px 8px 8px 32px;
-      text-decoration: none;
-      font-size: 25px;
-      color: #818181;
-      display: block;
-      transition: 0.3s;
-    }
-
-    .sidenav a:hover {
-      color: #f1f1f1;
-    }
-
-    .sidenav .closebtn {
-      position: absolute;
-      top: 0;
-      right: 25px;
-      font-size: 36px;
-      margin-left: 50px;
-    }
-
-    @media screen and (max-height: 450px) {
-      .sidenav {
-        padding-top: 15px;
-      }
-
-      .sidenav a {
-        font-size: 18px;
-      }
-    }
-
-    body {
-      padding: 0;
-      margin: 10;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, shrink-to-fit=yes">
+  <title>Algoritmo A*(estrela)</title>
+  <!-- <link rel="stylesheets" href="./style.css"> -->
+  <link rel="stylesheet" type="text/css" href="./style.css">
   <script src="../p5.js"></script>
   <!-- <script src="../addons/p5.sound.js"></script> -->
-  <script src="sketch.js"></script>
+  <script src="./sketch.js"></script>
 
 </head>
 
 <body>
-  <span id="infoCustos" style="font-size: 11px"></span>
-  <br>
-  <div id="mySidenav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <a href="#"><input type="file" name="inputfile" id="inputfile"></a>
-    <a href="#" onclick="solve=true">Resolver</a>
-    <a href="#">Clients</a>
-    <a href="#">Contact</a>
-  </div>
-
-  <!-- <pre id="output"></pre>
-    <div id="myTable"></div> -->
-  <div>
-    <main id="mm">
-    </main>
-  </div>
+  <span>
+    <div id="mySidenav" class="sidenav">
+      <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
+      <a href="#">
+        <label for="inputfile" id="labelFile">Abrir</label>
+        <input type="file" name="inputfile" id="inputfile">
+      </a>
+      <a href="#" onclick="novoMapa()">Novo</a>
+      <a href="#" onclick="handleSolve()">Resolver</a>
+      <a href="#" onclick="handleReset()">Resetar</a>
+      <a href="#">Custom</a>
+      <a ><input type="checkbox" id="diagonalCheck" name="diagonalCheck" checked onchange="handleCheckboxDiagonal()"><label class="checkboxNav" for="diagonalCheck">Diagonal</label></a>
+      <!-- <a href="#">Contact</a> -->
+    </div>
+  </span>
+  <span class="container clearfix">
+    <div id="container"></div>
+    <br>
+    <span id="infoCustos"></span>
+    <br>
+    <br>
+    <span>Resultado: </span><span id="resultadoText"></span>
+    <br>
+    <span>
+      <p id="outputPath"></p>
+    </span>
+    <button id="btn-copy" style="width: 260px" onclick="handleCopyTextFromParagraph()">
+      Copiar resultado
+    </button>
+  </span>
 
 </body>
 
 <script src="lerTXT.js"></script>
+
+
 
 </html>
