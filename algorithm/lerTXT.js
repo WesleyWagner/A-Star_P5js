@@ -93,14 +93,24 @@ function parserArquivo(){
 }
 
 function loadConfigs(){
-    cols = configs.ncols;
-    rows = configs.nrows;
+    cols = parseFloat(configs.ncols);
+    rows = parseFloat(configs.nrows);
     grid = new Array(rows);
     cv = 1;
     ch = 1;
-    cv = configs.weightY;
-    ch = configs.weightX;
+    cv = parseFloat(configs.weightY);
+    ch = parseFloat(configs.weightX);
     cd = (cv ** 2 + ch ** 2) ** 0.5;
+    let checkCX;
+    
+    checkCX = document.getElementById('checkCVValue'); // Selecionar checkbox correspondente
+    checkCX.value = cv.toFixed(2);
+
+    checkCX = document.getElementById('checkCHValue'); // Selecionar checkbox correspondente
+    checkCX.value = ch.toFixed(2);
+
+    checkCX = document.getElementById('checkCDValue'); // Selecionar checkbox correspondente
+    checkCX.value = cd.toFixed(2);
 
     w = canvaWidth / cols;
     h = canvaHeight / rows;
@@ -128,8 +138,7 @@ function loadConfigs(){
     for (var i = 0; i < rows; i++)
         for (var j = 0; j < cols; j++) {
             grid[i][j].addNeighbors(grid);
-        }
-    
+        }  
 }
 
 function handleConfigs() {

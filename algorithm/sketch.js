@@ -7,7 +7,7 @@ function removeFromArray(arr, elt) {
 }
 
 function heuristic(ini, end, euler = true) {
-  let d;
+  let d = 0;
   if (euler) {
     d = ((end.i - ini.i) ** 2 + (end.j - ini.j) ** 2) * 0.5;//Euler
   } else {
@@ -23,7 +23,7 @@ var
   ch,
   cv,
   cd,
-  fr = 60;
+  frame = 1;
 
 var
   openSet = [],
@@ -69,13 +69,13 @@ class Cell {
     this.show = function (color) {
       leftBuffer.fill(color);
       leftBuffer.strokeWeight(1);
-      leftBuffer.rect(this.j * w * rateResize, this.i * h * rateResize, w*rateResize, h*rateResize);
+      leftBuffer.rect(this.j * w * rateResize, this.i * h * rateResize, w * rateResize, h * rateResize);
 
       // fill(0, 102, 153);
       // textSize(10);
-      // textAlign(CENTER, CENTER);
-      // text(`C${this.i}.${this.j}=${this.value}`, this.j * w, this.i * h, w, h);
-    }
+      // textAlign(CENTER, TOP);
+      // text(`C${this.i}.${this.j}\nf: ${getNumber(this.f)}\ng: ${getNumber(this.g)}\nh: ${getNumber(this.h)}`, this.j * w, this.i * h, w, h);
+    };
 
     this.addNeighbors = function (grid) {
       var i = this.i;
@@ -148,8 +148,15 @@ class Cell {
   }
 }
 
+function getNumber(number) {
+  if (typeof number === 'number' && number !== Infinity) {
+    return number.toFixed(2);
+  }
+  return '';
+};
+
 class Legenda {
-  constructor (x,y,text,color){
+  constructor(x, y, text, color) {
     this.x = x;
     this.y = y;
     this.text = text;
@@ -158,12 +165,12 @@ class Legenda {
       rightBuffer.color(this.color);
       rightBuffer.fill(this.color);
       rightBuffer.strokeWeight(0);
-      rightBuffer.rect(this.x*rateResize, this.y*rateResize, 160*rateResize, 30*rateResize);
-      
+      rightBuffer.rect(this.x * rateResize, this.y * rateResize, 160 * rateResize, 30 * rateResize);
+
       rightBuffer.fill("#FAFAFA");
       rightBuffer.textAlign(CENTER);
       rightBuffer.textSize(18);
-      rightBuffer.text(this.text, (this.x+80)*rateResize, (this.y+20)*rateResize);
+      rightBuffer.text(this.text, (this.x + 80) * rateResize, (this.y + 20) * rateResize);
     }
   }
 }
@@ -187,7 +194,7 @@ var
   pathCanvas = [], // 
   // xCanvas = 210,
   // yCanvas = 80,
-  canvaWidth = 800,
+  canvaWidth = 900,
   canvaAux = 200,
   canvaHeight = 400;
 
@@ -241,14 +248,14 @@ function drawLeftBuffer() {
 function drawRightBuffer() {
   // corLivre = color('#EEE');//ok
 
-  let legendaOcupado = new Legenda(10,10,"OBSTACULO",'#160F29');
+  let legendaOcupado = new Legenda(10, 10, "OBSTACULO", '#160F29');
   // let legendaOcupado = new Legenda(10,10,"OBSTACULO",'hsl(0, 100%, 50%)');
-  let legendaInicio = new Legenda(10,50,"INICIO",'#FF9F1C');
-  let legendaFinal = new Legenda(10,90,"FINAL",'#C2D076');
-  let legendaVerificando = new Legenda(10,130,"ABERTO",'#98A886');
-  let legendaFechado = new Legenda(10,170,"FECHADO",'#C95D63');
-  let legendaCaminho = new Legenda(10,210,"CAMINHO",'#698DFB');
-  
+  let legendaInicio = new Legenda(10, 50, "INICIO", '#FF9F1C');
+  let legendaFinal = new Legenda(10, 90, "FINAL", '#C2D076');
+  let legendaVerificando = new Legenda(10, 130, "ABERTO", '#98A886');
+  let legendaFechado = new Legenda(10, 170, "FECHADO", '#C95D63');
+  let legendaCaminho = new Legenda(10, 210, "CAMINHO", '#698DFB');
+
   legendaOcupado.show();
   legendaInicio.show();
   legendaFinal.show();
@@ -266,25 +273,127 @@ function setup() {
   corCaminho = color('#698DFB');
   corFechado = color('#C95D63');//ok
   // windowResized();
-  canvas = createCanvas((canvaWidth + canvaAux)*rateResize, canvaHeight*rateResize);
+  canvas = createCanvas((canvaWidth + canvaAux) * rateResize, canvaHeight * rateResize);
   canvas.parent('container');
-  leftBuffer = createGraphics(canvaWidth*rateResize, canvaHeight*rateResize);
-  rightBuffer = createGraphics(canvaAux*rateResize, canvaHeight*rateResize);
+  leftBuffer = createGraphics(canvaWidth * rateResize, canvaHeight * rateResize);
+  rightBuffer = createGraphics(canvaAux * rateResize, canvaHeight * rateResize);
 
   // 800 x 400 (double width to make room for each "sub-canvas")
   //    createCanvas(800, 400);
   // Create both of your off-screen graphics buffers
 
-  frameRate(fr);
+  frameRate(frame);
   canvas.background('#EEE');
   // canvas.position(xCanvas,yCanvas);
 }
 
+function changeFPS(value) {
+  console.log(`TIPO ${typeof value}: VALOR: ${value}`);
+  let defaultValue = 10;
+  let frameBox = document.getElementById('frameRateBox');
+  let frameBoxValue = parseInt(frameBox.value);
+  if(value == '-'){
+    frameBoxValue -= 1;
+  }
+
+  if(value == '+'){
+    frameBoxValue += 1;
+  }
+
+  if (typeof frameBoxValue == 'number') {
+    const MIN = 0;
+    const MAX = 60;
+    let boundedValue = Math.min(Math.max(frameBoxValue, MIN), MAX);
+    frameBox.value = boundedValue;
+    frameRate(boundedValue);
+  } else {
+    frameRate(defaultValue);//Default 
+    frameBox.value = defaultValue;
+  }
+}
+
+function handleValueConfigs(elemento) {
+  let lastCH=ch,lastCV=cv,lastCD=cd;
+  let arrayParse = elemento.split(':');
+  let checkCX;
+  if(arrayParse[0] == 'CD'){
+    let valueTextBox = parseFloat(arrayParse[1]); // Armazenar valor recebido do box de texto
+    console.log(`CD valor ${valueTextBox}`);
+    if (typeof valueTextBox == 'number') { // Verificar se o valor recebido é um numero
+          checkCX = document.getElementById('checkCD'); // Selecionar checkbox correspondente
+      if (checkCX.checked) { // Se estiver habilitado altere para o valor indicado
+        const MIN = 1;
+        const MAX = 50;
+        let boundedValue = Math.min(Math.max(valueTextBox, MIN), MAX); // Ajustar valor recebido para estar dentro do intervalo
+        cd = boundedValue;
+      }
+    }else {
+      cd = 1;
+      elemento.value = 1;
+    }
+  };
+
+  if(arrayParse[0] == 'CV'){
+    let valueTextBox = parseFloat(arrayParse[1]); // Armazenar valor recebido do box de texto
+    if (typeof valueTextBox == 'number') { // Verificar se o valor recebido é um numero
+          checkCX = document.getElementById('checkCV'); // Selecionar checkbox correspondente
+      if (checkCX.checked) { // Se estiver habilitado altere para o valor indicado
+        const MIN = 1;
+        const MAX = 50;
+        let boundedValue = Math.min(Math.max(valueTextBox, MIN), MAX); // Ajustar valor recebido para estar dentro do intervalo
+        cv = boundedValue;
+      }
+    }else {
+      cv = 1;
+      elemento.value = 1;
+    }
+  };
+
+  if(arrayParse[0] == 'CH'){
+    let valueTextBox = parseFloat(arrayParse[1]); // Armazenar valor recebido do box de texto
+    if (typeof valueTextBox == 'number') { // Verificar se o valor recebido é um numero
+          checkCX = document.getElementById('checkCH'); // Selecionar checkbox correspondente
+      if (checkCX.checked) { // Se estiver habilitado altere para o valor indicado
+        const MIN = 1;
+        const MAX = 50;
+        let boundedValue = Math.min(Math.max(valueTextBox, MIN), MAX); // Ajustar valor recebido para estar dentro do intervalo
+        ch = boundedValue;
+      }
+    }else {
+      ch = 1;
+      elemento.value = 1;
+    }
+  }
+  let infoCustosEl = document.getElementById('infoCustos');
+  infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+}
+
+function handleChangeConfigs(elemento) {
+  let textBox = document.getElementById(`${elemento.name}Value`);
+  // console.log(textBox.value);
+  textBox.disabled = !elemento.checked;
+  try {if (!elemento.checked) {
+    if(elemento.name == 'checkCH'){
+      console.log("RESET CH");
+      ch = parseFloat(configs.weightX);
+    }
+    if(elemento.name == 'checkCV'){
+      ch = parseFloat(configs.weightY);
+    }
+    if(elemento.name == 'checkCD'){
+      let pcv = parseFloat(configs.weightY);
+      let pch = parseFloat(configs.weightX);
+      cd = (pcv ** 2 + pch ** 2) ** 0.5;
+    }    
+  }} catch {}
+  
+}
+
 function draw() {
   canvas.background('#EEE');
-  
+
   image(leftBuffer, 0, 0);
-  image(rightBuffer, 800, 0);
+  image(rightBuffer, canvaWidth, 0);
   if (!initCanvas) {
     return;
   }
@@ -294,6 +403,8 @@ function draw() {
 
   if (solve) {
     if (openSet.length > 0) {
+      // console.log("CONTROLE'\n'");
+      // console.log(grid[0][0]);
       // Continuar procurando
       var melhorIndex = 0;
       for (var i = 0; i < openSet.length; i++) {
@@ -305,7 +416,7 @@ function draw() {
       var current = openSet[melhorIndex];
 
       if (current.value == 3) {
-        console.log("PONTO DE CHEGADA ALCANÇADO");
+        // console.log("PONTO DE CHEGADA ALCANÇADO");
         stopLoop = true;
         resolvido = true;
         // solve =false;
@@ -315,31 +426,42 @@ function draw() {
         removeFromArray(openSet, current);
         closedSet.push(current);
 
-        var neighbors = current.neighbors;
+        var neighbors = current.neighbors; // Vizinhos do nó atual
 
         for (var i = 0; i < neighbors.length; i++) {
           var neighbor = neighbors[i];
-          var tempH = heuristic(neighbor, end);
-          var tempF = tempG + tempH;
-          if (!closedSet.includes(neighbor)) {
+
+          if (!openSet.includes(neighbor) && !closedSet.includes(neighbor)) {//No descoberto
+
+            var tempH = heuristic(neighbor, end);
             var tempG = current.g + custoDeslocamento(neighbor, current);
-            if (openSet.includes(neighbor)) {
-              if (tempG < neighbor.g) {
-                let indexNeighbor = openSet.indexOf(neighbor);
-                openSet[indexNeighbor].g = tempG;
-                // openSet[indexNeighbor].f = tempF;
-                // openSet[indexNeighbor].h = tempH;
-              }
-            } else {// Nó novo
-
-              neighbor.h = heuristic(neighbor, end);
-              neighbor.f = neighbor.g + neighbor.h;
-              neighbor.g = tempG;
-
-              neighbor.previous = current;
-              openSet.push(neighbor);
+            neighbor.h = tempH;
+            neighbor.g = tempG;
+            // console.log(`CURRENT ${i} G: ${current.g}`);
+            // console.log(`CUSTO ${i} G: ${custoDeslocamento(neighbor, current)}`);
+            // console.log(`TYPEOF CUSTO ${i} G: ${typeof custoDeslocamento(neighbor, current)}`);
+            neighbor.f = tempG + tempH;
+            // console.log(`VALOR ${i} F: ${tempF}`);
+            // console.log(`VIZINHO ${i} F: ${neighbor.f}`);
+            neighbor.previous = current;
+            openSet.push(neighbor);
+            // console.log(`VIZINHO NOVO: C ${neighbor.i}.${neighbor.j}\nh: ${neighbor.h}\ng: ${neighbor.g}\nf: ${neighbor.f}`);
+          };
+          if (openSet.includes(neighbor) && !closedSet.includes(neighbor)) {//No redescoberto
+            var tempG = current.g + custoDeslocamento(neighbor, current);
+            var tempH = heuristic(neighbor, end);
+            var tempF = tempG + tempH;
+            var indexRedescoberto = openSet.indexOf(neighbor);
+            var gAtual = openSet[indexRedescoberto].g;
+            var fAtual = openSet[indexRedescoberto].f;
+            if (tempG < gAtual) {
+              // console.log("ATUALIZANDO NÓ");
+              openSet[indexRedescoberto].h = tempH;
+              openSet[indexRedescoberto].g = tempG;
+              openSet[indexRedescoberto].f = tempF;
+              openSet[indexRedescoberto].previous = current;
             }
-          }
+          };
         }
       }
     } else {
@@ -369,7 +491,7 @@ function draw() {
     }
     let outputPath = document.getElementById("outputPath");
     outputPath.innerText = arrayPath.join(" => ");
-    console.log(arrayPath.join("=>"));
+    // console.log(arrayPath.join("=>"));
     boolPathMake = false;
   }
 }

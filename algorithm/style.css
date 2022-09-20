@@ -1,5 +1,5 @@
 body {
-    font-family: "Lato", sans-serif;
+    font-family: "Roboto", sans-serif;
 }
 
 .sidenav {
@@ -12,11 +12,11 @@ body {
     background-color: #111;
     overflow-x: hidden;
     transition: 0.5s;
-    padding-top: 60px;
+    padding-top: 20px;
 }
 
 .sidenav a {
-    padding: 8px 8px 8px 32px;
+    padding: 8px 8px 8px 12px;
     text-decoration: none;
     font-size: 25px;
     color: #818181;
@@ -26,14 +26,6 @@ body {
 
 .sidenav a:hover {
     color: #f1f1f1;
-}
-
-.sidenav .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
 }
 
 @media screen and (max-height: 450px) {
@@ -60,8 +52,31 @@ body {
 }
 
 * .checkboxNav {
+    /* width: 30px; */
     font-size: 18px;
 }
+
+* .textBoxNav {
+    font-family: "Roboto", sans-serif;
+    width: 60px;
+    height: auto;
+    font-size: 18px;
+    color: #f1f1f1;
+    background-color: #515151;
+    border-radius: 8px;
+    border: #515151;
+    text-align: center;
+    caret-color: #515151;
+}
+
+* .textBoxNav:disabled {
+    color: #818181;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('Roboto-Bold.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}  
 
 #inputfile {
     display: none;
@@ -77,3 +92,43 @@ body {
     overflow: hidden;
     /* display: flex; */
 }
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border: none;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #999;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 3s;
+    font-size: 12px;
+  }
+  
+  .tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #999 transparent transparent transparent;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 0.9;
+  }

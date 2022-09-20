@@ -25,7 +25,52 @@
       <a href="#" onclick="handleSolve()">Resolver</a>
       <a href="#" onclick="handleReset()">Resetar</a>
       <a href="#">Custom</a>
-      <a ><input type="checkbox" id="diagonalCheck" name="diagonalCheck" checked onchange="handleCheckboxDiagonal()"><label class="checkboxNav" for="diagonalCheck">Diagonal</label></a>
+      <a>
+        <label class="checkboxNav" for="frameRateBox">Frame Rate</label><br>
+        <a href="#" style="display: inline;" onclick="changeFPS('-')">-</a>
+        <input class="textBoxNav" type="text" id="frameRateBox" name="frameRateBox" value="10" onchange="changeFPS()">
+        <a href="#" style="display: inline;" onclick="changeFPS('+')">+</a>
+      </a>
+
+
+      <a>
+        <input type="checkbox" id="diagonalCheck" name="diagonalCheck" checked onchange="handleCheckboxDiagonal()">
+        <label class="checkboxNav tooltip" for="diagonalCheck">
+          <div class="tooltip">Diagonal
+            <span class="tooltiptext">Permitir Movimento Diagonal</span>
+          </div>
+        </label>
+      </a>
+      <a>
+        <input type="checkbox" id="checkCD" name="checkCD" onchange="handleChangeConfigs(this)">
+        <label class="checkboxNav" for="checkCD">
+          <div class="tooltip">Valor CD
+            <span class="tooltiptext">Custo do Movimento Diagonal</span>
+          </div>
+        </label>
+        <input class="textBoxNav" type="text" id="checkCDValue" name="checkCDValue" disabled value="10"
+          onchange="handleValueConfigs(`CD:${this.value}`)">
+      </a>
+      <a>
+        <input type="checkbox" id="checkCV" name="checkCV" onchange="handleChangeConfigs(this)">
+        <label class="checkboxNav" for="checkCV">
+          <div class="tooltip">Valor CV
+            <span class="tooltiptext">Custo do Movimento Vertical</span>
+          </div>
+        </label>
+        <input class="textBoxNav" type="text" id="checkCVValue" name="checkCVValue" disabled value="10"
+          onchange="handleValueConfigs(`CV:${this.value}`)">
+      </a>
+      <a>
+        <input type="checkbox" id="checkCH" name="checkCH" onchange="handleChangeConfigs(this)">
+        <label class="checkboxNav" for="checkCH">
+          <div class="tooltip">Valor CH
+            <span class="tooltiptext">Custo do Movimento Horizontal</span>
+          </div>
+        </label>
+        <input class="textBoxNav" type="text" id="checkCHValue" name="checkCHValue" disabled value="10"
+          onchange="handleValueConfigs(`CH:${this.value}`)">
+      </a>
       <!-- <a href="#">Contact</a> -->
     </div>
   </span>
