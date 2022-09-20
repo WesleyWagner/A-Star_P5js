@@ -75,7 +75,7 @@ function abrirArquivo() {
     }
 }
 
-function parserArquivo(){
+function parserArquivo() {
     // console.log(outputHTML.textContent);
     let splited = arquivo.split(/\r\n/);
     let header = splited[0].split(' ');
@@ -92,54 +92,52 @@ function parserArquivo(){
     matrix = ArrayRemove(matrix, '');
 }
 
-function loadConfigs(){
-    cols = parseFloat(configs.ncols);
-    rows = parseFloat(configs.nrows);
-    grid = new Array(rows);
-    cv = 1;
-    ch = 1;
-    cv = parseFloat(configs.weightY);
-    ch = parseFloat(configs.weightX);
-    cd = (cv ** 2 + ch ** 2) ** 0.5;
-    configs.cd = cd;
-    let checkCX;
-    
-    checkCX = document.getElementById('checkCVValue'); // Selecionar checkbox correspondente
-    checkCX.value = cv.toFixed(2);
+function loadConfigs() {
+    try {
+        cols = parseFloat(configs.ncols);
+        rows = parseFloat(configs.nrows);
+        grid = new Array(rows);
+        cv = 1;
+        ch = 1;
+        cv = parseFloat(configs.weightY);
+        ch = parseFloat(configs.weightX);
+        cd = (cv ** 2 + ch ** 2) ** 0.5;
+        configs.cd = cd;
+        
+        updateValueBox();
 
-    checkCX = document.getElementById('checkCHValue'); // Selecionar checkbox correspondente
-    checkCX.value = ch.toFixed(2);
+        w = canvaWidth / cols;
+        h = canvaHeight / rows;
 
-    checkCX = document.getElementById('checkCDValue'); // Selecionar checkbox correspondente
-    checkCX.value = cd.toFixed(2);
+        for (var i = 0; i < rows; i++) {
+            grid[i] = new Array(cols);
+        }
 
-    w = canvaWidth / cols;
-    h = canvaHeight / rows;
+        for (var i = 0; i < rows; i++)
+            for (var j = 0; j < cols; j++) {
+                grid[i][j] = new Cell(i, j);
+            }
 
-    for (var i = 0; i < rows; i++) {
-        grid[i] = new Array(cols);
+        for (var i = 0; i < rows; i++)
+            for (var j = 0; j < cols; j++) {
+                grid[i][j].value = matrix[i][j];
+                if (grid[i][j].value == 2) {
+                    start = grid[i][j];
+                }
+                if (grid[i][j].value == 3) {
+                    end = grid[i][j];
+                }
+            }
+
+        for (var i = 0; i < rows; i++)
+            for (var j = 0; j < cols; j++) {
+                grid[i][j].addNeighbors(grid);
+            }
+
+    } catch {
+        let resultadoText = document.getElementById('resultadoText');
+        resultadoText.innerText = "Falha ao abrir arquivo";
     }
-
-    for (var i = 0; i < rows; i++)
-        for (var j = 0; j < cols; j++) {
-            grid[i][j] = new Cell(i, j);
-        }
-
-    for (var i = 0; i < rows; i++)
-        for (var j = 0; j < cols; j++) {
-            grid[i][j].value = matrix[i][j];
-            if (grid[i][j].value == 2) {
-                start = grid[i][j];
-            }
-            if (grid[i][j].value == 3) {
-                end = grid[i][j];
-            }
-        }
-
-    for (var i = 0; i < rows; i++)
-        for (var j = 0; j < cols; j++) {
-            grid[i][j].addNeighbors(grid);
-        }  
 }
 
 function handleConfigs() {

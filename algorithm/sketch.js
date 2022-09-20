@@ -6,14 +6,23 @@ function removeFromArray(arr, elt) {
   }
 }
 
-function heuristic(ini, end, euler = true) {
+function heuristic(ini, end, method) {
   let d = 0;
-  if (euler) {
-    d = ((end.i - ini.i) ** 2 + (end.j - ini.j) ** 2) * 0.5;//Euler
+  // console.log(method);
+  if (method == 'euclidian') {
+    d = ((end.i - ini.i) ** 2 + (end.j - ini.j) ** 2) ** 0.5;//Euler
+    // console.log('euler');
   } else {
     d = abs(end.i - ini.i) + abs(end.j - ini.j);//Manhattan
+    // console.log('manhattan');
   }
   return d;
+}
+
+function handleChangeHeuristic(value) {
+  // console.log(value);
+  method = value;
+  // console.log(method);
 }
 
 var
@@ -37,8 +46,10 @@ var
   stopLoop = false, // Parar loop de calculo
   initCanvas = false, // Iniciar desenho do Canvas na tela
   resolvido = false, // Flag de resolvido
-  solve = false;
-boolPathMake = true; // Flag de construção do caminho final
+  solve = false,
+  statistics = false,
+  method = 'euclidian',
+  boolPathMake = true; // Flag de construção do caminho final
 
 var
   corLivre,
@@ -70,11 +81,12 @@ class Cell {
       leftBuffer.fill(color);
       leftBuffer.strokeWeight(1);
       leftBuffer.rect(this.j * w * rateResize, this.i * h * rateResize, w * rateResize, h * rateResize);
-
-      // fill(0, 102, 153);
-      // textSize(10);
-      // textAlign(CENTER, TOP);
-      // text(`C${this.i}.${this.j}\nf: ${getNumber(this.f)}\ng: ${getNumber(this.g)}\nh: ${getNumber(this.h)}`, this.j * w, this.i * h, w, h);
+      if (statistics) {
+        fill(0, 102, 153);
+        textSize(10);
+        textAlign(CENTER, TOP);
+        text(`C${this.i}.${this.j}\nf: ${getNumber(this.f)}\ng: ${getNumber(this.g)}\nh: ${getNumber(this.h)}`, this.j * w, this.i * h, w, h);
+      }
     };
 
     this.addNeighbors = function (grid) {
@@ -176,8 +188,8 @@ class Legenda {
 }
 
 function custoDeslocamento(pFinal, pInicial) {
-  let dx = abs(pFinal.i - pInicial.i);// sem abs(*) o termo dx = {-1,0,1} - com -1 indicando que o ponto final esta antes do inicial, 0 que estão na mesma linha, e 1 quando o ponto final esta a frente do ponto inicial.
-  let dy = abs(pFinal.j - pInicial.j);// sem abs(*) o termo dy = {-1,0,1} - com -1 indicando que o ponto final esta antes do inicial, 0 que estão na mesma coluna, e 1 quando o ponto final esta a frente do ponto inicial.
+  let dx = abs(pFinal.j - pInicial.j);// sem abs(*) o termo dx = {-1,0,1} - com -1 indicando que o ponto final esta antes do inicial, 0 que estão na mesma linha, e 1 quando o ponto final esta a frente do ponto inicial.
+  let dy = abs(pFinal.i - pInicial.i);// sem abs(*) o termo dy = {-1,0,1} - com -1 indicando que o ponto final esta antes do inicial, 0 que estão na mesma coluna, e 1 quando o ponto final esta a frente do ponto inicial.
 
   if (dx > 0 && dy > 0 && diagonal) return cd;// retornar custo de deslocamento horizontal
   if (dy > 0 && dx == 0) return cv;// se mover em y e não em x, retornar custo de movimento vertical
@@ -288,15 +300,15 @@ function setup() {
 }
 
 function changeFPS(value) {
-  console.log(`TIPO ${typeof value}: VALOR: ${value}`);
+  // console.log(`TIPO ${typeof value}: VALOR: ${value}`);
   let defaultValue = 10;
   let frameBox = document.getElementById('frameRateBox');
   let frameBoxValue = parseInt(frameBox.value);
-  if(value == '-'){
+  if (value == '-') {
     frameBoxValue -= 1;
   }
 
-  if(value == '+'){
+  if (value == '+') {
     frameBoxValue += 1;
   }
 
@@ -313,79 +325,80 @@ function changeFPS(value) {
 }
 
 function handleValueConfigs(elemento) {
-  let lastCH=ch,lastCV=cv,lastCD=cd;
+  let lastCH = ch, lastCV = cv, lastCD = cd;
   let arrayParse = elemento.split(':');
   let checkCX;
-  if(arrayParse[0] == 'CD'){
+  if (arrayParse[0] == 'CD') {
     let valueTextBox = parseFloat(arrayParse[1]); // Armazenar valor recebido do box de texto
-    console.log(`CD valor ${valueTextBox}`);
-    if (typeof valueTextBox == 'number') { // Verificar se o valor recebido é um numero
-          checkCX = document.getElementById('checkCD'); // Selecionar checkbox correspondente
+    // console.log(`CD valor ${valueTextBox}`);
+    if (typeof valueTextBox == 'number' && !Object.is(valueTextBox,NaN)) { // Verificar se o valor recebido é um numero
+      checkCX = document.getElementById('checkCD'); // Selecionar checkbox correspondente
+      // console.log(`Atualizado `);
       if (checkCX.checked) { // Se estiver habilitado altere para o valor indicado
         const MIN = 1;
         const MAX = 50;
         let boundedValue = Math.min(Math.max(valueTextBox, MIN), MAX); // Ajustar valor recebido para estar dentro do intervalo
         cd = boundedValue;
       }
-    }else {
+    } else {
       cd = 1;
-      elemento.value = 1;
     }
   };
 
-  if(arrayParse[0] == 'CV'){
+  if (arrayParse[0] == 'CV') {
     let valueTextBox = parseFloat(arrayParse[1]); // Armazenar valor recebido do box de texto
-    if (typeof valueTextBox == 'number') { // Verificar se o valor recebido é um numero
-          checkCX = document.getElementById('checkCV'); // Selecionar checkbox correspondente
+    if (typeof valueTextBox == 'number' && !Object.is(valueTextBox,NaN)) { // Verificar se o valor recebido é um numero
+      checkCX = document.getElementById('checkCV'); // Selecionar checkbox correspondente
       if (checkCX.checked) { // Se estiver habilitado altere para o valor indicado
         const MIN = 1;
         const MAX = 50;
         let boundedValue = Math.min(Math.max(valueTextBox, MIN), MAX); // Ajustar valor recebido para estar dentro do intervalo
         cv = boundedValue;
       }
-    }else {
+    } else {
       cv = 1;
-      elemento.value = 1;
     }
   };
 
-  if(arrayParse[0] == 'CH'){
+  if (arrayParse[0] == 'CH') {
     let valueTextBox = parseFloat(arrayParse[1]); // Armazenar valor recebido do box de texto
-    if (typeof valueTextBox == 'number') { // Verificar se o valor recebido é um numero
-          checkCX = document.getElementById('checkCH'); // Selecionar checkbox correspondente
+    if (typeof valueTextBox == 'number' && !Object.is(valueTextBox,NaN)) { // Verificar se o valor recebido é um numero
+      checkCX = document.getElementById('checkCH'); // Selecionar checkbox correspondente
       if (checkCX.checked) { // Se estiver habilitado altere para o valor indicado
         const MIN = 1;
         const MAX = 50;
         let boundedValue = Math.min(Math.max(valueTextBox, MIN), MAX); // Ajustar valor recebido para estar dentro do intervalo
         ch = boundedValue;
       }
-    }else {
+    } else {
       ch = 1;
-      elemento.value = 1;
     }
   }
   let infoCustosEl = document.getElementById('infoCustos');
   infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+  updateValueBox();
 }
 
 function handleChangeConfigs(elemento) {
   let textBox = document.getElementById(`${elemento.name}Value`);
   // console.log(textBox.value);
   textBox.disabled = !elemento.checked;
-  try {if (!elemento.checked) {
-    if(elemento.name == 'checkCH'){
-      // console.log("RESET CH");
-      ch= parseFloat(configs.weightX);
+  try {
+    if (!elemento.checked) {
+      if (elemento.name == 'checkCH') {
+        // console.log("RESET CH");
+        ch = parseFloat(configs.weightX);
+      }
+      if (elemento.name == 'checkCV') {
+        cv = parseFloat(configs.weightY);
+      }
+      if (elemento.name == 'checkCD') {
+        cd = parseFloat(configs.cd);
+      }
+      let infoCustosEl = document.getElementById('infoCustos');
+      infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
     }
-    if(elemento.name == 'checkCV'){
-      cv = parseFloat(configs.weightY);
-    }
-    if(elemento.name == 'checkCD'){
-      cd = parseFloat(configs.cd);
-    }
-    let infoCustosEl = document.getElementById('infoCustos');
-    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
-  }} catch {};  
+  } catch { };
 }
 
 function draw() {
@@ -432,7 +445,7 @@ function draw() {
 
           if (!openSet.includes(neighbor) && !closedSet.includes(neighbor)) {//No descoberto
 
-            var tempH = heuristic(neighbor, end);
+            var tempH = heuristic(neighbor, end, method);
             var tempG = current.g + custoDeslocamento(neighbor, current);
             neighbor.h = tempH;
             neighbor.g = tempG;
@@ -448,7 +461,7 @@ function draw() {
           };
           if (openSet.includes(neighbor) && !closedSet.includes(neighbor)) {//No redescoberto
             var tempG = current.g + custoDeslocamento(neighbor, current);
-            var tempH = heuristic(neighbor, end);
+            var tempH = heuristic(neighbor, end, method);
             var tempF = tempG + tempH;
             var indexRedescoberto = openSet.indexOf(neighbor);
             var gAtual = openSet[indexRedescoberto].g;
@@ -511,13 +524,63 @@ function handleCopyTextFromParagraph() {
 
 function handleCheckboxDiagonal() {
   const buttonDiagonal = document.getElementById('diagonalCheck');
-  console.log(buttonDiagonal.checked);
+  // console.log(buttonDiagonal.checked);
   diagonal = buttonDiagonal.checked;
 }
 
 function handleSolve() {
+  let checkCDValue = document.getElementById('checkCDValue');
+  let checkCVValue = document.getElementById('checkCVValue');
+  let checkCHValue = document.getElementById('checkCHValue');
+  let provCD = null;
+  let provCV = null;
+  let provCH = null;
+  if (!checkCDValue.disabled) {
+    // provCD = handleValueConfigs(`CD:${checkCDValue.value}`);
+    provCD = checkCDValue.value;
+    // console.log(`Salvando cd ${provCD}`);
+  }
+  if (!checkCVValue.disabled) {
+    provCV = checkCVValue.value;
+    // console.log(`Salvando cv ${provCV}`);
+  }
+  if (!checkCHValue.disabled) {
+    provCH = checkCHValue.value;
+    // console.log(`Salvando ch ${provCH}`);
+  }
   handleReset();
   solve = true;
+  if (provCD != null) {
+    handleValueConfigs(`CD:${provCD}`);
+
+    let infoCustosEl = document.getElementById('infoCustos');
+    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+    updateValueBox();
+  }
+  if (provCV != null) {
+    handleValueConfigs(`CV:${provCV}`);
+    let infoCustosEl = document.getElementById('infoCustos');
+    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+    updateValueBox();
+
+  }
+  if (provCH != null) {
+    handleValueConfigs(`CH:${provCH}`);
+    let infoCustosEl = document.getElementById('infoCustos');
+    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+    updateValueBox();
+  }
+}
+
+function updateValueBox() {
+  let checkCX = document.getElementById('checkCVValue'); // Selecionar checkbox correspondente
+  checkCX.value = cv.toFixed(2);
+
+  checkCX = document.getElementById('checkCHValue'); // Selecionar checkbox correspondente
+  checkCX.value = ch.toFixed(2);
+
+  checkCX = document.getElementById('checkCDValue'); // Selecionar checkbox correspondente
+  checkCX.value = cd.toFixed(2);
 }
 
 var rateResize = 1;

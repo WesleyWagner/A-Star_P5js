@@ -26,13 +26,20 @@
       <a href="#" onclick="handleReset()">Resetar</a>
       <a href="#">Custom</a>
       <a>
-        <label class="checkboxNav" for="frameRateBox">Frame Rate</label><br>
+        <label class="checkboxNav" for="frameRateBox">Velocidade</label><br>
         <a href="#" style="display: inline;" onclick="changeFPS('-')">-</a>
         <input class="textBoxNav" type="text" id="frameRateBox" name="frameRateBox" value="1" onchange="changeFPS()">
         <a href="#" style="display: inline;" onclick="changeFPS('+')">+</a>
       </a>
 
-
+      <a>
+        <input type="checkbox" id="statisticsCheck" name="statisticsCheck" onchange="statistics = this.checked">
+        <label class="checkboxNav tooltip" for="statisticsCheck">
+          <div class="tooltip">Estatisticas
+            <span class="tooltiptext">Mostrar Estatisticas nas celulas</span>
+          </div>
+        </label>
+      </a>
       <a>
         <input type="checkbox" id="diagonalCheck" name="diagonalCheck" checked onchange="handleCheckboxDiagonal()">
         <label class="checkboxNav tooltip" for="diagonalCheck">
@@ -70,6 +77,17 @@
         </label>
         <input class="textBoxNav" type="text" id="checkCHValue" name="checkCHValue" disabled value="10"
           onchange="handleValueConfigs(`CH:${this.value}`)">
+      </a>
+      <a>
+        <label for="heuristica">
+          <div class="tooltip">Heuristica
+            <span class="tooltiptext">Heurística do custo de movimentação direta</span>
+          </div>:
+        </label>
+        <select name="heuristica" id="heuristica" onchange="handleChangeHeuristic(this.value)">
+          <option value="euclidian">Euclidiana</option>
+          <option value="manhattan">Manhattan</option>
+        </select>
       </a>
       <!-- <a href="#">Contact</a> -->
     </div>
