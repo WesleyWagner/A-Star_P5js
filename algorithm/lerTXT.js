@@ -101,6 +101,7 @@ function loadConfigs(){
     cv = parseFloat(configs.weightY);
     ch = parseFloat(configs.weightX);
     cd = (cv ** 2 + ch ** 2) ** 0.5;
+    configs.cd = cd;
     let checkCX;
     
     checkCX = document.getElementById('checkCVValue'); // Selecionar checkbox correspondente

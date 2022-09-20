@@ -374,19 +374,18 @@ function handleChangeConfigs(elemento) {
   textBox.disabled = !elemento.checked;
   try {if (!elemento.checked) {
     if(elemento.name == 'checkCH'){
-      console.log("RESET CH");
-      ch = parseFloat(configs.weightX);
+      // console.log("RESET CH");
+      ch= parseFloat(configs.weightX);
     }
     if(elemento.name == 'checkCV'){
-      ch = parseFloat(configs.weightY);
+      cv = parseFloat(configs.weightY);
     }
     if(elemento.name == 'checkCD'){
-      let pcv = parseFloat(configs.weightY);
-      let pch = parseFloat(configs.weightX);
-      cd = (pcv ** 2 + pch ** 2) ** 0.5;
-    }    
-  }} catch {}
-  
+      cd = parseFloat(configs.cd);
+    }
+    let infoCustosEl = document.getElementById('infoCustos');
+    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+  }} catch {};  
 }
 
 function draw() {
