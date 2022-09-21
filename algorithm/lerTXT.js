@@ -92,6 +92,23 @@ function parserArquivo() {
     matrix = ArrayRemove(matrix, '');
 }
 
+function parserPayload(payload) {
+    // console.log(outputHTML.textContent);
+    let splited = payload.split(/\r\n/);
+    let header = splited[0].split(' ');
+    let nrows = header[0];
+    let ncols = header[1];
+    let weightX = header[2];
+    let weightY = header[3];
+    configs = { nrows, ncols, weightX, weightY };
+    matrix = [];
+    for (let i = 0; i < splited.length; i++) {
+        matrix[i] = splited[i].split(' ');
+    }
+    matrix.shift();
+    matrix = ArrayRemove(matrix, '');
+}
+
 function loadConfigs() {
     try {
         cols = parseFloat(configs.ncols);

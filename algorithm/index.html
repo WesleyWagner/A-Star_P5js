@@ -21,15 +21,25 @@
         <label for="inputfile" id="labelFile">Abrir</label>
         <input type="file" name="inputfile" id="inputfile">
       </a>
-      <a href="#" onclick="novoMapa()">Novo</a>
+      <a href="#" onclick="openModal()">Novo</a>
       <a href="#" onclick="handleSolve()">Resolver</a>
       <a href="#" onclick="handleReset()">Resetar</a>
-      <a href="#">Custom</a>
+      <hr>
+      <a href="#">Ajustes</a>
       <a>
         <label class="checkboxNav" for="frameRateBox">Velocidade</label><br>
         <a href="#" style="display: inline;" onclick="changeFPS('-')">-</a>
         <input class="textBoxNav" type="text" id="frameRateBox" name="frameRateBox" value="1" onchange="changeFPS()">
         <a href="#" style="display: inline;" onclick="changeFPS('+')">+</a>
+      </a>
+
+      <a>
+        <input type="checkbox" id="updateCanvas" name="updateCanvas" checked onchange="updateCanvas = this.checked">
+        <label class="checkboxNav tooltip" for="updateCanvas">
+          <div class="tooltip">Atualizar matriz
+            <span class="tooltiptext">Habilita atualização do canvas na página</span>
+          </div>
+        </label>
       </a>
 
       <a>
@@ -106,12 +116,60 @@
     <button id="btn-copy" style="width: 260px" onclick="handleCopyTextFromParagraph()">
       Copiar resultado
     </button>
+    <button style="width: 260px" onclick="downloadTXT()">
+      Download txt
+    </button>
   </span>
+
+  <!-- Inicio do Modal -->
+  <div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()" id="closeModal">&times;</span> <!-- Botao fechar -->
+      <div id="modalNovo" class="modalInput">
+        <!-- parametros da funcao function novo(nrow, ncol, ncv, nch, nblocks, nstart, nend) -->
+        <input type="text" name="nrow" id="nrow" value="5"/>
+        <label for="nrow">Numero de linhas</label>
+        <br>
+        <input type="text" name="ncol" id="ncol" value="5"/>
+        <label for="ncol">Numero de colunas</label>
+        <br>
+        <input type="text" name="ncv" id="ncv" value="1"/>
+        <label for="ncv">Custo deslocamento vertical</label>
+        <br>
+        <input type="text" name="nch" id="nch" value="1"/>
+        <label for="nch">Custo deslocamento horizontal</label>
+        <br>
+        <input type="text" name="nblocks" id="nblocks" value="3"/>
+        <label for="nblocks">Quantidade de celulas bloqueadas</label>
+        <br>
+        <input type="text" name="nstarti" id="nstarti" value="1"/>
+        <label for="nstarti">Posição inicial i: </label>
+        <br>
+        <input type="text" name="nstartj" id="nstartj" value="1"/>
+        <label for="nstartj">Posição inicial j: </label>
+        <br>
+        <input type="text" name="endi" id="endi" value="3"/>
+        <label for="endi">Posição final i: </label>
+        <br>
+        <input type="text" name="endj" id="endj" value="3"/>
+        <label for="endj">Posição final j: </label>
+        <br>
+        <button type="button" onclick="collectModal()" value="Criar">Criar</button>
+        <button type="button" onclick="downloadNovo()" value="Download txt Criado">Download txt Criado</button>
+      </div>
+    </div>
+  </div>
+  <!-- Fim do modal -->
 
 </body>
 
 <script src="lerTXT.js"></script>
 
-
+<script>
+  function downloadTXT() {
+    download("resultado.txt", txtToDownload);
+  }
+</script>
 
 </html>

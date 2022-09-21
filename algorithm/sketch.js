@@ -48,6 +48,7 @@ var
   resolvido = false, // Flag de resolvido
   solve = false,
   statistics = false,
+  updateCanvas = true,
   method = 'euclidian',
   boolPathMake = true; // Flag de construção do caminho final
 
@@ -93,9 +94,9 @@ class Cell {
       var i = this.i;
       var j = this.j;
       var ni = (i >= 1);
-      var pi = (i + 1 < rows);
+      var pi = ((i + 1) < rows);
       var nj = (j >= 1);
-      var pj = (j + 1 < cols);
+      var pj = ((j + 1) < cols);
 
       if (ni) {
         var tempNeighbor = grid[i - 1][j];
@@ -314,7 +315,7 @@ function changeFPS(value) {
 
   if (typeof frameBoxValue == 'number') {
     const MIN = 0;
-    const MAX = 60;
+    const MAX = 200;
     let boundedValue = Math.min(Math.max(frameBoxValue, MIN), MAX);
     frameBox.value = boundedValue;
     frameRate(boundedValue);
@@ -331,11 +332,11 @@ function handleValueConfigs(elemento) {
   if (arrayParse[0] == 'CD') {
     let valueTextBox = parseFloat(arrayParse[1]); // Armazenar valor recebido do box de texto
     // console.log(`CD valor ${valueTextBox}`);
-    if (typeof valueTextBox == 'number' && !Object.is(valueTextBox,NaN)) { // Verificar se o valor recebido é um numero
+    if (typeof valueTextBox == 'number' && !Object.is(valueTextBox, NaN)) { // Verificar se o valor recebido é um numero
       checkCX = document.getElementById('checkCD'); // Selecionar checkbox correspondente
       // console.log(`Atualizado `);
       if (checkCX.checked) { // Se estiver habilitado altere para o valor indicado
-        const MIN = 1;
+        const MIN = 0;
         const MAX = 50;
         let boundedValue = Math.min(Math.max(valueTextBox, MIN), MAX); // Ajustar valor recebido para estar dentro do intervalo
         cd = boundedValue;
@@ -347,10 +348,10 @@ function handleValueConfigs(elemento) {
 
   if (arrayParse[0] == 'CV') {
     let valueTextBox = parseFloat(arrayParse[1]); // Armazenar valor recebido do box de texto
-    if (typeof valueTextBox == 'number' && !Object.is(valueTextBox,NaN)) { // Verificar se o valor recebido é um numero
+    if (typeof valueTextBox == 'number' && !Object.is(valueTextBox, NaN)) { // Verificar se o valor recebido é um numero
       checkCX = document.getElementById('checkCV'); // Selecionar checkbox correspondente
       if (checkCX.checked) { // Se estiver habilitado altere para o valor indicado
-        const MIN = 1;
+        const MIN = 0;
         const MAX = 50;
         let boundedValue = Math.min(Math.max(valueTextBox, MIN), MAX); // Ajustar valor recebido para estar dentro do intervalo
         cv = boundedValue;
@@ -362,10 +363,10 @@ function handleValueConfigs(elemento) {
 
   if (arrayParse[0] == 'CH') {
     let valueTextBox = parseFloat(arrayParse[1]); // Armazenar valor recebido do box de texto
-    if (typeof valueTextBox == 'number' && !Object.is(valueTextBox,NaN)) { // Verificar se o valor recebido é um numero
+    if (typeof valueTextBox == 'number' && !Object.is(valueTextBox, NaN)) { // Verificar se o valor recebido é um numero
       checkCX = document.getElementById('checkCH'); // Selecionar checkbox correspondente
       if (checkCX.checked) { // Se estiver habilitado altere para o valor indicado
-        const MIN = 1;
+        const MIN = 0;
         const MAX = 50;
         let boundedValue = Math.min(Math.max(valueTextBox, MIN), MAX); // Ajustar valor recebido para estar dentro do intervalo
         ch = boundedValue;
@@ -410,8 +411,10 @@ function draw() {
     return;
   }
 
-  drawLeftBuffer();
-  drawRightBuffer();
+  if (updateCanvas) {
+    drawLeftBuffer();
+    drawRightBuffer();
+  }
 
   if (solve) {
     if (openSet.length > 0) {
@@ -502,11 +505,14 @@ function draw() {
       arrayPath.push(`C${pathCanvas[lengthPath - it - 1].i}.${pathCanvas[lengthPath - it - 1].j}`);
     }
     let outputPath = document.getElementById("outputPath");
-    outputPath.innerText = arrayPath.join(" => ");
+    txtToDownload = arrayPath.join(" => ");
+    outputPath.innerText = txtToDownload;
     // console.log(arrayPath.join("=>"));
     boolPathMake = false;
   }
 }
+
+var txtToDownload;
 
 function handleCopyTextFromParagraph() {
   const body = document.querySelector('body');
@@ -602,3 +608,176 @@ var rateResize = 1;
 //         resizeCanvas(canvaWidthTot, canvaHeight);
 //     }
 // }
+
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
+var outputPayload = '';
+
+function novo(linhas, colunas, custoV, custoH, bloqueios, inicio, fim) {
+  let
+    nrow = parseInt(linhas),
+    ncol = parseInt(colunas),
+    ncv = parseInt(custoV),
+    nch = parseInt(custoH),
+    nblocks = parseInt(bloqueios),
+    nstart = { i: inicio.i, j: inicio.j },
+    nend = { i: fim.i, j: fim.j };
+
+     
+    nstart.i = Math.min(Math.max(nstart.i, 0), nrow-1); // Ajustar valor recebido para estar dentro do intervalo
+    
+
+  console.log(`Linhas:${nrow}|Colunas:${ncol}|CustoV:${ncv}|CustoH:${nch}|Blocks:${nblocks}|Start i:${nstart.i}|Start j:${nstart.j}|End i:${nend.i}|End j:${nend.j}`);
+  // console.log(`Ponto Inicial:${nstart}`);
+  let newGrid = new Array(nrow); //Criar linhas
+  console.log("Criado newGrid");
+  // w = canvaWidth / ncol;
+  // h = canvaHeight / nrow;
+
+  for (var i = 0; i < nrow; i++) {
+    newGrid[i] = new Array(ncol); //Criar colunas
+  }
+
+  for (var i = 0; i < nrow; i++)
+    for (var j = 0; j < ncol; j++) {
+      newGrid[i][j] = new Cell(i, j);
+    }
+
+  for (var i = 0; i < nrow; i++) // Zerar newGrid
+    for (var j = 0; j < ncol; j++) {
+      newGrid[i][j].value = 0;
+    }
+  console.log("Matriz Completa");
+
+  try {
+    newGrid[nstart.i][nstart.j].value = 2;//Indicar posição inicial
+    newGrid[nend.i][nend.j].value = 3;//Indicar posição final
+  } catch {
+    console.log(`ERRO AO INICIAR VALORES INICIAIS - ATRIBUINDO POSICAO 0,0 - ${nrow - 1},${ncol - 1}`);
+    newGrid[0][0].value = 2;//Indicar posição inicial
+    newGrid[nrow-1][ncol-1].value = 3;//Indicar posição final
+  }
+
+
+  let shuffleArray = [];
+  for (var i = 0; i < nrow; i++)
+    for (var j = 0; j < ncol; j++) {
+      if (newGrid[i][j].value == 0) {
+        shuffleArray.push(newGrid[i][j]);//Guardar posição livre
+      }
+    }
+  // let contadorBlocks = 0;
+  // console.log("ANTERS");
+  for (var contBlocks = 0; contBlocks < nblocks; contBlocks++) {
+
+    let indexRandomElement = getRandomInt(shuffleArray.length - 1);//sortear uma posição dentro do array com os elementos da newGrid
+    let randomCell = shuffleArray[indexRandomElement];
+    let i = randomCell.i, j = randomCell.j;
+    newGrid[i][j].value = 1; // Associar estado bloqueado
+    removeFromArray(shuffleArray, randomCell) // remover celula escolhida do array de sorteio
+    if (shuffleArray.length == 0) {
+      break;
+    }
+    // console.log(`BLOQUEADO:I${i}.J${j}`);
+    // Repetir processo até finalizar a contagem de blocos de bloqueio
+  }
+  console.log("Depois do laço shuffle");
+  // console.log(newGrid);
+
+  try{
+    for (var i = 0; i < nrow; i++)
+    for (var j = 0; j < ncol; j++) {
+      newGrid[i][j].addNeighbors(newGrid);
+    }
+  }catch{console.log(`ERRO AO ADICIONAR VIZINHOS`)}
+
+  
+
+    console.log("Adicionou Vizinhos");
+  let outputArray = [];
+  outputPayload = `${nrow} ${ncol} ${nch} ${ncv}\r\n`;//Cabeçalho
+
+  for (var i = 0; i < nrow; i++) {
+    for (var j = 0; j < ncol; j++) {
+      outputArray.push(newGrid[i][j].value);
+    }
+    outputPayload += outputArray.join(" ");
+    if (i < (nrow - 1))//Inserir \r\n exeto na ultima linha
+    {
+      outputPayload += '\r\n';
+    }
+    outputArray = [];
+  }
+  console.log(outputPayload);
+
+  grid = newGrid;
+
+  configs = { nrows: nrow, ncols: ncol, weightX: nch, weightY: ncv };
+  parserPayload(outputPayload);
+
+  // loadConfigs();
+  handleReset();
+}
+
+function downloadNovo() {
+  download("Labir.txt", outputPayload);
+}
+
+function collectModal() {
+  try {
+    let modalRow = document.getElementById("nrow");
+    let modalCol = document.getElementById("ncol");
+    let modalCV = document.getElementById("ncv");
+    let modalCH = document.getElementById("nch");
+    let modalBlocks = document.getElementById("nblocks");
+    let modalStartI = document.getElementById("nstarti");
+    let modalStartJ = document.getElementById("nstartj");
+    let modalEndI = document.getElementById("endi");
+    let modalEndJ = document.getElementById("endj");
+
+    let pStart = { i: modalStartI.value, j: modalStartJ.value };
+    let pEnd = { i: modalEndI.value, j: modalEndJ.value };
+
+    novo(modalRow.value, modalCol.value, modalCV.value, modalCH.value, modalBlocks.value, pStart, pEnd);
+    // loadConfigs();
+    // handleReset();
+    console.log("Arquivo criado");
+  } catch { alert("Falha ao criar nova matriz") };
+
+  // closeModal();
+}
+
+
+//Retorna um inteiro pseudo-aleatório entre 0 - [max]
+function getRandomInt(max) {
+  return (Math.round(Math.random() * max));
+}
+
+function openModal() {
+  var modal = document.getElementById("myModal");
+  modal.style.display = "block";
+}
+
+function closeModal() {
+  // When the user clicks on <span> (x), close the modal
+  var modal = document.getElementById("myModal");
+  modal.style.display = "none";
+}
+
+window.onclick = function (event) { // Fechar modal quando clicar fora da tela
+  var modal = document.getElementById("myModal");
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
