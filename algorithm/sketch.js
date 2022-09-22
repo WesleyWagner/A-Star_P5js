@@ -636,6 +636,9 @@ function novo(linhas, colunas, custoV, custoH, bloqueios, inicio, fim) {
 
      
     nstart.i = Math.min(Math.max(nstart.i, 0), nrow-1); // Ajustar valor recebido para estar dentro do intervalo
+    nstart.j = Math.min(Math.max(nstart.j, 0), ncol-1); // Ajustar valor recebido para estar dentro do intervalo
+    nend.i = Math.min(Math.max(nend.i, 0), nrow-1); // Ajustar valor recebido para estar dentro do intervalo
+    nend.j = Math.min(Math.max(nend.j, 0), ncol-1); // Ajustar valor recebido para estar dentro do intervalo
     
 
   console.log(`Linhas:${nrow}|Colunas:${ncol}|CustoV:${ncv}|CustoH:${nch}|Blocks:${nblocks}|Start i:${nstart.i}|Start j:${nstart.j}|End i:${nend.i}|End j:${nend.j}`);

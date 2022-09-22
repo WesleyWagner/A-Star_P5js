@@ -82,6 +82,11 @@ body {
     display: none;
 }
 
+#outputPath {
+  overflow-y: auto;
+  height: 100px;
+}
+
 #labelFile {
     cursor: pointer;
 }
