@@ -435,6 +435,12 @@ function draw() {
         stopLoop = true;
         resolvido = true;
         // solve =false;
+        let elcopy = document.getElementById('btn-copy');
+        elcopy.disabled = false;
+        let eldownTXT = document.getElementById('btn-downloadtxt');
+        eldownTXT.disabled = false;
+        let eldownCSV = document.getElementById('btn-downloadcsv');
+        eldownCSV.disabled = false;
       }
 
       if (!stopLoop) {
@@ -634,17 +640,17 @@ function novo(linhas, colunas, custoV, custoH, bloqueios, inicio, fim) {
     nstart = { i: inicio.i, j: inicio.j },
     nend = { i: fim.i, j: fim.j };
 
-     
-    nstart.i = Math.min(Math.max(nstart.i, 0), nrow-1); // Ajustar valor recebido para estar dentro do intervalo
-    nstart.j = Math.min(Math.max(nstart.j, 0), ncol-1); // Ajustar valor recebido para estar dentro do intervalo
-    nend.i = Math.min(Math.max(nend.i, 0), nrow-1); // Ajustar valor recebido para estar dentro do intervalo
-    nend.j = Math.min(Math.max(nend.j, 0), ncol-1); // Ajustar valor recebido para estar dentro do intervalo
-    
 
-  console.log(`Linhas:${nrow}|Colunas:${ncol}|CustoV:${ncv}|CustoH:${nch}|Blocks:${nblocks}|Start i:${nstart.i}|Start j:${nstart.j}|End i:${nend.i}|End j:${nend.j}`);
+  nstart.i = Math.min(Math.max(nstart.i, 0), nrow - 1); // Ajustar valor recebido para estar dentro do intervalo
+  nstart.j = Math.min(Math.max(nstart.j, 0), ncol - 1); // Ajustar valor recebido para estar dentro do intervalo
+  nend.i = Math.min(Math.max(nend.i, 0), nrow - 1); // Ajustar valor recebido para estar dentro do intervalo
+  nend.j = Math.min(Math.max(nend.j, 0), ncol - 1); // Ajustar valor recebido para estar dentro do intervalo
+
+
+  // console.log(`Linhas:${nrow}|Colunas:${ncol}|CustoV:${ncv}|CustoH:${nch}|Blocks:${nblocks}|Start i:${nstart.i}|Start j:${nstart.j}|End i:${nend.i}|End j:${nend.j}`);
   // console.log(`Ponto Inicial:${nstart}`);
   let newGrid = new Array(nrow); //Criar linhas
-  console.log("Criado newGrid");
+  // console.log("Criado newGrid");
   // w = canvaWidth / ncol;
   // h = canvaHeight / nrow;
 
@@ -669,7 +675,7 @@ function novo(linhas, colunas, custoV, custoH, bloqueios, inicio, fim) {
   } catch {
     console.log(`ERRO AO INICIAR VALORES INICIAIS - ATRIBUINDO POSICAO 0,0 - ${nrow - 1},${ncol - 1}`);
     newGrid[0][0].value = 2;//Indicar posição inicial
-    newGrid[nrow-1][ncol-1].value = 3;//Indicar posição final
+    newGrid[nrow - 1][ncol - 1].value = 3;//Indicar posição final
   }
 
 
@@ -695,19 +701,19 @@ function novo(linhas, colunas, custoV, custoH, bloqueios, inicio, fim) {
     // console.log(`BLOQUEADO:I${i}.J${j}`);
     // Repetir processo até finalizar a contagem de blocos de bloqueio
   }
-  console.log("Depois do laço shuffle");
+  // console.log("Depois do laço shuffle");
   // console.log(newGrid);
 
-  try{
+  try {
     for (var i = 0; i < nrow; i++)
-    for (var j = 0; j < ncol; j++) {
-      newGrid[i][j].addNeighbors(newGrid);
-    }
-  }catch{console.log(`ERRO AO ADICIONAR VIZINHOS`)}
+      for (var j = 0; j < ncol; j++) {
+        newGrid[i][j].addNeighbors(newGrid);
+      }
+  } catch { console.log(`ERRO AO ADICIONAR VIZINHOS`) }
 
-  
 
-    console.log("Adicionou Vizinhos");
+
+  // console.log("Adicionou Vizinhos");
   let outputArray = [];
   outputPayload = `${nrow} ${ncol} ${nch} ${ncv}\r\n`;//Cabeçalho
 
@@ -783,4 +789,20 @@ window.onclick = function (event) { // Fechar modal quando clicar fora da tela
   if (event.target == modal) {
     modal.style.display = "none";
   }
+}
+
+function downloadCSV() {
+
+  let dataPayload = ["Celula,F,G,H,tipo"];
+  let element = {};
+
+  for (let i = 0; i < rows; i++)
+    for (let j = 0; j < cols; j++) {
+      dataPayload.push(`C${i}.${j},${grid[i][j].f},${grid[i][j].g},${grid[i][j].h},${grid[i][j].value}`);
+    }
+  dataPayload = dataPayload.join('\n');
+  console.log(dataPayload);
+
+  download("custos.csv", dataPayload);
+
 }

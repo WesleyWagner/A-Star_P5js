@@ -29,7 +29,7 @@
       <a>
         <label class="checkboxNav" for="frameRateBox">Velocidade</label><br>
         <a href="#" style="display: inline;" onclick="changeFPS('-')">-</a>
-        <input class="textBoxNav" type="text" id="frameRateBox" name="frameRateBox" value="1" onchange="changeFPS()">
+        <input class="textBoxNav" type="text" id="frameRateBox" name="frameRateBox" value="10" onchange="changeFPS()">
         <a href="#" style="display: inline;" onclick="changeFPS('+')">+</a>
       </a>
 
@@ -45,8 +45,8 @@
       <a>
         <input type="checkbox" id="statisticsCheck" name="statisticsCheck" onchange="statistics = this.checked">
         <label class="checkboxNav tooltip" for="statisticsCheck">
-          <div class="tooltip">Estatisticas
-            <span class="tooltiptext">Mostrar Estatisticas nas celulas</span>
+          <div class="tooltip">Mostrar Custos
+            <span class="tooltiptext">Mostrar Custos nas celulas</span>
           </div>
         </label>
       </a>
@@ -113,11 +113,14 @@
     <span>
       <p id="outputPath"></p>
     </span>
-    <button id="btn-copy" style="width: 260px" onclick="handleCopyTextFromParagraph()">
+    <button id="btn-copy" style="width: 33%" disabled onclick="handleCopyTextFromParagraph()">
       Copiar resultado
     </button>
-    <button style="width: 260px" onclick="downloadTXT()">
-      Download txt
+    <button id="btn-downloadtxt" style="width: 33%" disabled onclick="downloadTXT()">
+      Download .txt
+    </button>
+    <button id="btn-downloadcsv" style="width: 33%" disabled onclick="downloadCSV()">
+      Download .csv Custos calculados
     </button>
   </span>
 

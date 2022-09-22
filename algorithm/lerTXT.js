@@ -120,7 +120,7 @@ function loadConfigs() {
         ch = parseFloat(configs.weightX);
         cd = (cv ** 2 + ch ** 2) ** 0.5;
         configs.cd = cd;
-        
+
         updateValueBox();
 
         w = canvaWidth / cols;
@@ -193,4 +193,10 @@ function handleReset() {
     buttonCopy.innerText = 'Copiar resultado';
     let resultadoText = document.getElementById('resultadoText');
     resultadoText.innerText = '';
+    let elcopy = document.getElementById('btn-copy');
+    elcopy.disabled = false;
+    let eldownTXT = document.getElementById('btn-downloadtxt');
+    eldownTXT.disabled = false;
+    let eldownCSV = document.getElementById('btn-downloadcsv');
+    eldownCSV.disabled = false;
 }
