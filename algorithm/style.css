@@ -94,7 +94,7 @@ body {
 body {
     padding: 0;
     margin: 10;
-    overflow: hidden;
+    overflow: auto;
     /* display: flex; */
 }
 

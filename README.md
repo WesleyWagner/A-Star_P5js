@@ -1,6 +1,9 @@
 # Implementação do Algoritmo de Busca A* (A-estrela)
 Esta implementação faz parte de uma tarefa avaliativa da disciplina "Controle Fuzzy de Sistemas Dinâmicos" do Curso de Engenharia Mecatrônica da Universidade Federal do Rio Grande do Norte.
 
+## Aplicação disponível em
+* https://wesleywagner.github.io/A-Start_P5js/
+
 ## Mais Informações Relacionadas a P5js
 
 https://p5js.org/get-started/
