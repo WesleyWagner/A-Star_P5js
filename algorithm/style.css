@@ -146,7 +146,7 @@ body {
     /* Stay in place */
     z-index: 10;
     /* Sit on top */
-    padding-top: 420px;
+    padding-bottom: 10px;
     /* Location of the box */
     left: 0;
     top: 0;
@@ -170,6 +170,9 @@ body {
     border: 1px solid #888;
     border-radius: 20px;
     width: 30%;
+    position: absolute;
+    bottom: 20px;
+    left: 35%;
   }
 
   /* The Close Button */
