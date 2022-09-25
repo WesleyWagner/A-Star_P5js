@@ -3,13 +3,14 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, shrink-to-fit=yes">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, shrink-to-fit=yes">
   <title>Algoritmo A*(estrela)</title>
   <!-- <link rel="stylesheets" href="./style.css"> -->
   <link rel="stylesheet" type="text/css" href="./style.css">
-  <script src="../p5.js"></script>
+  <script src="../p5.min.js"></script>
   <!-- <script src="../addons/p5.sound.js"></script> -->
   <script src="./sketch.js"></script>
+  <script src="./lerTXT.js"></script>
 
 </head>
 
@@ -144,7 +145,7 @@
         <label for="nch">Custo deslocamento horizontal</label>
         <br>
         <input type="text" name="nblocks" id="nblocks" value="3"/>
-        <label for="nblocks">Quantidade de celulas bloqueadas</label>
+        <label for="nblocks">Quantidade de celulas bloqueadas (%)</label>
         <br>
         <input type="text" name="nstarti" id="nstarti" value="1"/>
         <label for="nstarti">Posição inicial i: </label>
@@ -167,12 +168,11 @@
 
 </body>
 
-<script src="lerTXT.js"></script>
-
 <script>
   function downloadTXT() {
     download("resultado.txt", txtToDownload);
   }
 </script>
-
+<!-- Icon -->
+<!-- https://www.flaticon.com/free-icon/path_2064135?term=path&page=1&position=23&page=1&position=23&related_id=2064135&origin=search -->
 </html>

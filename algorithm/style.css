@@ -12,13 +12,13 @@ body {
     background-color: #111;
     overflow-x: hidden;
     transition: 0.5s;
-    padding-top: 20px;
+    padding-top: 10px;
 }
 
 .sidenav a {
     padding: 8px 8px 8px 12px;
     text-decoration: none;
-    font-size: 25px;
+    font-size: 18px;
     color: #818181;
     display: block;
     transition: 0.3s;
@@ -34,7 +34,7 @@ body {
     }
 
     .sidenav a {
-        font-size: 18px;
+        font-size: 16px;
     }
 }
 
@@ -53,14 +53,14 @@ body {
 
 * .checkboxNav {
     /* width: 30px; */
-    font-size: 18px;
+    font-size: 14px;
 }
 
 * .textBoxNav {
     font-family: "Roboto", sans-serif;
     width: 60px;
     height: auto;
-    font-size: 18px;
+    font-size: 16px;
     color: #f1f1f1;
     background-color: #515151;
     border-radius: 8px;

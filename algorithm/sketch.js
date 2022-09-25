@@ -32,7 +32,7 @@ var
   ch,
   cv,
   cd,
-  frame = 1;
+  frame = 10;
 
 var
   openSet = [],
@@ -757,8 +757,11 @@ function collectModal() {
 
     let pStart = { i: modalStartI.value, j: modalStartJ.value };
     let pEnd = { i: modalEndI.value, j: modalEndJ.value };
-
-    novo(modalRow.value, modalCol.value, modalCV.value, modalCH.value, modalBlocks.value, pStart, pEnd);
+    let pnblocks = parseFloat(modalBlocks.value);//Percentual
+    let boundedBlocks = Math.min(Math.max(pnblocks, 0), 100);
+    let totalblocks = parseInt(modalRow.value)*parseInt(modalCol.value)*boundedBlocks/100;//Percentual
+    
+    novo(modalRow.value, modalCol.value, modalCV.value, modalCH.value, totalblocks, pStart, pEnd);
     // loadConfigs();
     // handleReset();
     console.log("Arquivo criado");
