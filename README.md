@@ -1,5 +1,5 @@
 # Implementação do Algoritmo de Busca A* (A-estrela)
-Esta implementação faz parte de uma tarefa avaliativa da disciplina Controle Fuzzy de Sistemas Dinâmicos.
+Esta implementação faz parte de uma tarefa avaliativa da disciplina "Controle Fuzzy de Sistemas Dinâmicos" do Curso de Engenharia Mecatrônica da Universidade Federal do Rio Grande do Norte.
 
 ## Mais Informações Relacionadas a P5js
 
