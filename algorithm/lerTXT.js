@@ -77,7 +77,7 @@ function abrirArquivo() {
 
 function parserArquivo() {
     // console.log(outputHTML.textContent);
-    let splited = arquivo.split(/\r\n/);
+    let splited = arquivo.split(/[\r,\n,\r\n]/);
     let header = splited[0].split(' ');
     let nrows = header[0];
     let ncols = header[1];
@@ -94,7 +94,7 @@ function parserArquivo() {
 
 function parserPayload(payload) {
     // console.log(outputHTML.textContent);
-    let splited = payload.split(/\r\n/);
+    let splited = payload.split(/[\r,\n,\r\n]/);
     let header = splited[0].split(' ');
     let nrows = header[0];
     let ncols = header[1];
@@ -157,6 +157,10 @@ function loadConfigs() {
     }
 }
 
+var
+  start, // Celula Inicial
+  end;  // Celula Final
+
 function handleConfigs() {
     parserArquivo();
     loadConfigs();
@@ -176,7 +180,7 @@ function handleReset() {
     stopLoop = false;
     openSet = [];
     closedSet = [];
-    start.h = heuristic(start, end);//Inicializar custo total inicial 0 e recalcular para os próximos nós
+    start.h = heuristic(start, end, method);//Inicializar custo total inicial 0 e recalcular para os próximos nós
     start.g = 0;//Inicializar custo total inicial 0 e recalcular para os próximos nós
     start.f = start.g + start.h;
     // pathResolvido.push(start);
