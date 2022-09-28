@@ -186,7 +186,7 @@ function handleReset() {
     boolPathMake = true;
     draw();
     let infoCustosEl = document.getElementById('infoCustos');
-    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}  | Heurística: ${method}`;
     let outputPath = document.getElementById('outputPath');
     outputPath.innerText = '';
     let buttonCopy = document.getElementById('btn-copy');

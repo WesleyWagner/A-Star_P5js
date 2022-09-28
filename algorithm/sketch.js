@@ -9,7 +9,7 @@ function removeFromArray(arr, elt) {
 function heuristic(ini, end, method) {
   let d = 0;
   // console.log(method);
-  if (method == 'euclidian') {
+  if (method == 'Euclidean') {
     d = ((end.i - ini.i) ** 2 + (end.j - ini.j) ** 2) ** 0.5;//Euler
     // console.log('euler');
   } else {
@@ -23,6 +23,8 @@ function handleChangeHeuristic(value) {
   // console.log(value);
   method = value;
   // console.log(method);
+  changeInfocustos()
+  
 }
 
 var
@@ -49,7 +51,7 @@ var
   solve = false,
   statistics = false,
   updateCanvas = true,
-  method = 'euclidian',
+  method = 'Euclidean',
   boolPathMake = true; // Flag de construção do caminho final
 
 var
@@ -375,9 +377,13 @@ function handleValueConfigs(elemento) {
       ch = 1;
     }
   }
-  let infoCustosEl = document.getElementById('infoCustos');
-  infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+  changeInfocustos();
   updateValueBox();
+}
+
+function changeInfocustos(){
+  let infoCustosEl = document.getElementById('infoCustos');
+  infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)} | Heurística: ${method}`;
 }
 
 function handleChangeConfigs(elemento) {
@@ -397,7 +403,7 @@ function handleChangeConfigs(elemento) {
         cd = parseFloat(configs.cd);
       }
       let infoCustosEl = document.getElementById('infoCustos');
-      infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+      infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)} | Heurística: ${method}`;
     }
   } catch { };
 }
@@ -566,20 +572,20 @@ function handleSolve() {
     handleValueConfigs(`CD:${provCD}`);
 
     let infoCustosEl = document.getElementById('infoCustos');
-    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)} | Heurística: ${method}`;
     updateValueBox();
   }
   if (provCV != null) {
     handleValueConfigs(`CV:${provCV}`);
     let infoCustosEl = document.getElementById('infoCustos');
-    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)} | Heurística: ${method}`;
     updateValueBox();
 
   }
   if (provCH != null) {
     handleValueConfigs(`CH:${provCH}`);
     let infoCustosEl = document.getElementById('infoCustos');
-    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)}`;
+    infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)} | Heurística: ${method}`;
     updateValueBox();
   }
 }
