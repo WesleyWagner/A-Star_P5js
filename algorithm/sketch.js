@@ -8,23 +8,23 @@ function removeFromArray(arr, elt) {
 
 function heuristic(ini, end, method) {
   let d = 0;
-
+  // console.log(method);
   if (method == 'Euclidean') {
     d = ((end.i - ini.i) ** 2 + (end.j - ini.j) ** 2) ** 0.5;//Euler
-
+    // console.log('euler');
   } else {
     d = abs(end.i - ini.i) + abs(end.j - ini.j);//Manhattan
-
+    // console.log('manhattan');
   }
   return d;
 }
 
 function handleChangeHeuristic(value) {
-
+  // console.log(value);
   method = value;
-
+  // console.log(method);
   changeInfocustos()
-
+  
 }
 
 var
@@ -44,13 +44,14 @@ var
   start, // Celula Inicial
   end,  // Celula Final
   diagonal = true, // Permitir diagonal
+  // manhatan = true, // Metodo de Navegação para calculo Heuristico
   stopLoop = false, // Parar loop de calculo
   initCanvas = false, // Iniciar desenho do Canvas na tela
   resolvido = false, // Flag de resolvido
   solve = false,
   statistics = false,
   updateCanvas = true,
-  method = 'Euclidean',// Metodo de Navegação para calculo Heuristico
+  method = 'Euclidean',
   boolPathMake = true; // Flag de construção do caminho final
 
 var
@@ -302,6 +303,7 @@ function setup() {
 }
 
 function changeFPS(value) {
+  // console.log(`TIPO ${typeof value}: VALOR: ${value}`);
   let defaultValue = 10;
   let frameBox = document.getElementById('frameRateBox');
   let frameBoxValue = parseInt(frameBox.value);
@@ -331,8 +333,10 @@ function handleValueConfigs(elemento) {
   let checkCX;
   if (arrayParse[0] == 'CD') {
     let valueTextBox = parseFloat(arrayParse[1]); // Armazenar valor recebido do box de texto
+    // console.log(`CD valor ${valueTextBox}`);
     if (typeof valueTextBox == 'number' && !Object.is(valueTextBox, NaN)) { // Verificar se o valor recebido é um numero
       checkCX = document.getElementById('checkCD'); // Selecionar checkbox correspondente
+      // console.log(`Atualizado `);
       if (checkCX.checked) { // Se estiver habilitado altere para o valor indicado
         const MIN = 0;
         const MAX = 50;
@@ -377,18 +381,19 @@ function handleValueConfigs(elemento) {
   updateValueBox();
 }
 
-function changeInfocustos() {
+function changeInfocustos(){
   let infoCustosEl = document.getElementById('infoCustos');
   infoCustosEl.textContent = `Custo de deslocamento vertical: ${cv} | Custo de deslocamento horizontal: ${ch} | Custo de deslocamento diagonal: ${cd.toFixed(3)} | Heurística: ${method}`;
 }
 
 function handleChangeConfigs(elemento) {
   let textBox = document.getElementById(`${elemento.name}Value`);
+  // console.log(textBox.value);
   textBox.disabled = !elemento.checked;
   try {
     if (!elemento.checked) {
       if (elemento.name == 'checkCH') {
-
+        // console.log("RESET CH");
         ch = parseFloat(configs.weightX);
       }
       if (elemento.name == 'checkCV') {
@@ -419,6 +424,8 @@ function draw() {
 
   if (solve) {
     if (openSet.length > 0) {
+      // console.log("CONTROLE'\n'");
+      // console.log(grid[0][0]);
       // Continuar procurando
       var melhorIndex = 0;
       for (var i = 0; i < openSet.length; i++) {
@@ -430,7 +437,7 @@ function draw() {
       var current = openSet[melhorIndex];
 
       if (current.value == 3) {
-
+        // console.log("PONTO DE CHEGADA ALCANÇADO");
         stopLoop = true;
         resolvido = true;
         // solve =false;
@@ -457,12 +464,15 @@ function draw() {
             var tempG = current.g + custoDeslocamento(neighbor, current);
             neighbor.h = tempH;
             neighbor.g = tempG;
-
+            // console.log(`CURRENT ${i} G: ${current.g}`);
+            // console.log(`CUSTO ${i} G: ${custoDeslocamento(neighbor, current)}`);
+            // console.log(`TYPEOF CUSTO ${i} G: ${typeof custoDeslocamento(neighbor, current)}`);
             neighbor.f = tempG + tempH;
-
+            // console.log(`VALOR ${i} F: ${tempF}`);
+            // console.log(`VIZINHO ${i} F: ${neighbor.f}`);
             neighbor.previous = current;
             openSet.push(neighbor);
-
+            // console.log(`VIZINHO NOVO: C ${neighbor.i}.${neighbor.j}\nh: ${neighbor.h}\ng: ${neighbor.g}\nf: ${neighbor.f}`);
           };
           if (openSet.includes(neighbor) && !closedSet.includes(neighbor)) {//No redescoberto
             var tempG = current.g + custoDeslocamento(neighbor, current);
@@ -472,7 +482,7 @@ function draw() {
             var gAtual = openSet[indexRedescoberto].g;
             var fAtual = openSet[indexRedescoberto].f;
             if (tempG < gAtual) {
-
+              // console.log("ATUALIZANDO NÓ");
               openSet[indexRedescoberto].h = tempH;
               openSet[indexRedescoberto].g = tempG;
               openSet[indexRedescoberto].f = tempF;
@@ -532,7 +542,7 @@ function handleCopyTextFromParagraph() {
 
 function handleCheckboxDiagonal() {
   const buttonDiagonal = document.getElementById('diagonalCheck');
-
+  // console.log(buttonDiagonal.checked);
   diagonal = buttonDiagonal.checked;
 }
 
@@ -544,17 +554,17 @@ function handleSolve() {
   let provCV = null;
   let provCH = null;
   if (!checkCDValue.disabled) {
-
+    // provCD = handleValueConfigs(`CD:${checkCDValue.value}`);
     provCD = checkCDValue.value;
-
+    // console.log(`Salvando cd ${provCD}`);
   }
   if (!checkCVValue.disabled) {
     provCV = checkCVValue.value;
-
+    // console.log(`Salvando cv ${provCV}`);
   }
   if (!checkCHValue.disabled) {
     provCH = checkCHValue.value;
-
+    // console.log(`Salvando ch ${provCH}`);
   }
   handleReset();
   solve = true;
@@ -593,6 +603,24 @@ function updateValueBox() {
 
 var rateResize = 1;
 
+// function windowResized() {
+//   let canvaWidthTot = canvaWidth+canvaAux+200;
+//     let width_percent = windowWidth / canvaWidthTot;
+//     let height_percent = windowHeight / canvaHeight;
+//     if ((width_percent < 1) || (height_percent < 1)) {
+//         if (width_percent <= height_percent) {
+//             resizeCanvas(canvaWidthTot*rateResize, width_percent * canvaHeight);
+//             rateResize = width_percent;
+//         } else {
+//             resizeCanvas(height_percent * canvaWidthTot, canvaHeight);
+//             rateResize = height_percent;
+//         }
+//     } else {
+//         rateResize = 1;
+//         resizeCanvas(canvaWidthTot, canvaHeight);
+//     }
+// }
+
 function download(filename, text) {
   var element = document.createElement('a');
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -625,8 +653,12 @@ function novo(linhas, colunas, custoV, custoH, bloqueios, inicio, fim) {
   nend.j = Math.min(Math.max(nend.j, 0), ncol - 1); // Ajustar valor recebido para estar dentro do intervalo
 
 
+  // console.log(`Linhas:${nrow}|Colunas:${ncol}|CustoV:${ncv}|CustoH:${nch}|Blocks:${nblocks}|Start i:${nstart.i}|Start j:${nstart.j}|End i:${nend.i}|End j:${nend.j}`);
+  // console.log(`Ponto Inicial:${nstart}`);
   let newGrid = new Array(nrow); //Criar linhas
-
+  // console.log("Criado newGrid");
+  // w = canvaWidth / ncol;
+  // h = canvaHeight / nrow;
 
   for (var i = 0; i < nrow; i++) {
     newGrid[i] = new Array(ncol); //Criar colunas
@@ -660,7 +692,8 @@ function novo(linhas, colunas, custoV, custoH, bloqueios, inicio, fim) {
         shuffleArray.push(newGrid[i][j]);//Guardar posição livre
       }
     }
-
+  // let contadorBlocks = 0;
+  // console.log("ANTERS");
   for (var contBlocks = 0; contBlocks < nblocks; contBlocks++) {
 
     let indexRandomElement = getRandomInt(shuffleArray.length - 1);//sortear uma posição dentro do array com os elementos da newGrid
@@ -674,6 +707,8 @@ function novo(linhas, colunas, custoV, custoH, bloqueios, inicio, fim) {
     // console.log(`BLOQUEADO:I${i}.J${j}`);
     // Repetir processo até finalizar a contagem de blocos de bloqueio
   }
+  // console.log("Depois do laço shuffle");
+  // console.log(newGrid);
 
   try {
     for (var i = 0; i < nrow; i++)
@@ -682,6 +717,9 @@ function novo(linhas, colunas, custoV, custoH, bloqueios, inicio, fim) {
       }
   } catch { console.log(`ERRO AO ADICIONAR VIZINHOS`) }
 
+
+
+  // console.log("Adicionou Vizinhos");
   let outputArray = [];
   outputPayload = `${nrow} ${ncol} ${nch} ${ncv}\r\n`;//Cabeçalho
 
@@ -703,6 +741,7 @@ function novo(linhas, colunas, custoV, custoH, bloqueios, inicio, fim) {
   configs = { nrows: nrow, ncols: ncol, weightX: nch, weightY: ncv };
   parserPayload(outputPayload);
 
+  // loadConfigs();
   handleReset();
 }
 
@@ -726,8 +765,8 @@ function collectModal() {
     let pEnd = { i: modalEndI.value, j: modalEndJ.value };
     let pnblocks = parseFloat(modalBlocks.value);//Percentual
     let boundedBlocks = Math.min(Math.max(pnblocks, 0), 100);
-    let totalblocks = parseInt(modalRow.value) * parseInt(modalCol.value) * boundedBlocks / 100;//Percentual
-
+    let totalblocks = parseInt(modalRow.value)*parseInt(modalCol.value)*boundedBlocks/100;//Percentual
+    
     novo(modalRow.value, modalCol.value, modalCV.value, modalCH.value, totalblocks, pStart, pEnd);
     // loadConfigs();
     // handleReset();
@@ -749,6 +788,7 @@ function openModal() {
 }
 
 function closeModal() {
+  // When the user clicks on <span> (x), close the modal
   var modal = document.getElementById("myModal");
   modal.style.display = "none";
 }
